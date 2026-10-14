@@ -1,0 +1,40 @@
+@{
+    ViewData["Title"] = "Đăng ký thành công - Chờ kích hoạt";
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5 text-center">
+            <div class="card card-custom p-4 shadow-sm border-0">
+                <div class="d-inline-flex p-3 rounded-circle bg-warning-subtle text-warning mx-auto mb-3">
+                    <span class="material-symbols-outlined fs-1">hourglass_top</span>
+                </div>
+
+                <h4 class="fw-bold text-dark mb-2">ĐĂNG KÝ THÀNH CÔNG!</h4>
+                <p class="text-secondary small mb-4">
+                    Tài khoản của bạn đã được ghi nhận vào hệ thống ở trạng thái <strong class="badge badge-pending text-uppercase">Chờ duyệt (PENDING_APPROVAL)</strong>.
+                </p>
+
+                <div class="p-3 bg-light rounded-3 text-start small text-muted mb-4">
+                    <div class="fw-semibold text-dark mb-1 d-flex align-items-center gap-1">
+                        <span class="material-symbols-outlined fs-6 text-primary">policy</span>
+                        Quy định bảo mật hệ thống:
+                    </div>
+                    <ul class="mb-0 ps-3">
+                        <li>Quản trị viên (Admin) hoặc Cán bộ phụ trách sẽ kiểm tra thông tin MSSV và hồ sơ sinh viên của bạn.</li>
+                        <li>Sau khi tài khoản được kích hoạt thành trạng thái <code>ACTIVE</code>, bạn có thể đăng nhập bình thường.</li>
+                        <li>Nếu cần hỗ trợ khẩn cấp, vui lòng liên hệ Văn phòng Đoàn - Hội trường.</li>
+                    </ul>
+                </div>
+
+                <div class="d-flex gap-2 justify-content-center">
+                    <a asp-action="Login" class="btn btn-primary-custom">
+                        <span class="material-symbols-outlined">login</span>
+                        <span>Quay lại trang Đăng nhập</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

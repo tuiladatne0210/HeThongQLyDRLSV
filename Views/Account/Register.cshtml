@@ -1,0 +1,110 @@
+@model EMS_MVC.ViewModels.Account.RegisterViewModel
+@{
+    ViewData["Title"] = "Đăng ký tài khoản sinh viên";
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="text-center mb-3">
+                <div class="d-inline-flex p-3 rounded-4 bg-primary text-white shadow-sm mb-2">
+                    <span class="material-symbols-outlined fs-2">person_add</span>
+                </div>
+                <h4 class="fw-bold text-primary mb-1">ĐĂNG KÝ TÀI KHOẢN SINH VIÊN</h4>
+                <p class="text-secondary small mb-0">Hệ thống xét duyệt tài khoản trước khi cấp quyền truy cập</p>
+            </div>
+
+            <div class="card card-custom p-4 shadow-sm border-0">
+                <div class="alert alert-info small d-flex align-items-center gap-2 mb-3">
+                    <span class="material-symbols-outlined">info</span>
+                    <div>Tài khoản đăng ký mới sẽ ở trạng thái <strong>CHỜ DUYỆT (PENDING_APPROVAL)</strong> và cần Quản trị viên kích hoạt trước khi có thể đăng nhập.</div>
+                </div>
+
+                <form asp-action="Register" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger small py-2 px-3 mb-3"></div>
+
+                    <div class="row g-3">
+                        <!-- Tên đăng nhập -->
+                        <div class="col-md-6">
+                            <label asp-for="Username" class="form-label small fw-semibold text-secondary"></label>
+                            <input asp-for="Username" class="form-control" placeholder="Ví dụ: sv210145" />
+                            <span asp-validation-for="Username" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Mã sinh viên (MSSV) -->
+                        <div class="col-md-6">
+                            <label asp-for="StudentCode" class="form-label small fw-semibold text-secondary"></label>
+                            <input asp-for="StudentCode" class="form-control" placeholder="Ví dụ: SV210145" />
+                            <span asp-validation-for="StudentCode" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Họ và tên -->
+                        <div class="col-12">
+                            <label asp-for="FullName" class="form-label small fw-semibold text-secondary"></label>
+                            <input asp-for="FullName" class="form-control" placeholder="Ví dụ: Nguyễn Văn An" />
+                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label small fw-semibold text-secondary"></label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="email@edu.vn" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Số điện thoại -->
+                        <div class="col-md-6">
+                            <label asp-for="PhoneNumber" class="form-label small fw-semibold text-secondary"></label>
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="09xxxxxxxx" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Lớp sinh hoạt -->
+                        <div class="col-md-6">
+                            <label asp-for="ClassId" class="form-label small fw-semibold text-secondary"></label>
+                            <select asp-for="ClassId" asp-items="ViewBag.ClassesList" class="form-select">
+                                <option value="">-- Chọn lớp sinh hoạt --</option>
+                            </select>
+                            <span asp-validation-for="ClassId" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Ngày sinh -->
+                        <div class="col-md-6">
+                            <label asp-for="DateOfBirth" class="form-label small fw-semibold text-secondary"></label>
+                            <input asp-for="DateOfBirth" type="date" class="form-control" />
+                            <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Mật khẩu -->
+                        <div class="col-md-6">
+                            <label asp-for="Password" class="form-label small fw-semibold text-secondary"></label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="Từ 6 ký tự..." />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Xác nhận mật khẩu -->
+                        <div class="col-md-6">
+                            <label asp-for="ConfirmPassword" class="form-label small fw-semibold text-secondary"></label>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Nhập lại mật khẩu..." />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary-custom w-100 justify-content-center py-2">
+                            <span class="material-symbols-outlined">how_to_reg</span>
+                            <span>ĐĂNG KÝ TÀI KHOẢN</span>
+                        </button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-3 pt-3 border-top">
+                    <span class="small text-muted">Đã có tài khoản?</span>
+                    <a asp-action="Login" class="small fw-semibold text-primary text-decoration-none ms-1">Đăng nhập tại đây</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

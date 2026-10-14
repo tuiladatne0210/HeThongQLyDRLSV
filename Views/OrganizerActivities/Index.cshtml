@@ -1,0 +1,139 @@
+@model List<EMS_MVC.ViewModels.Activity.ActivityCardItemViewModel>
+@{
+    ViewData["Title"] = "Quản lý hoạt động - Ban tổ chức";
+    Layout = "_Layout";
+}
+
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-extrabold text-on-surface tracking-tight">Quản lý hoạt động Ban tổ chức</h1>
+            <p class="text-xs text-status-neutral mt-1">Tạo mới, theo dõi trạng thái phê duyệt, mở đăng ký và điều phối điểm danh</p>
+        </div>
+        <a asp-action="Create" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-container text-xs font-bold transition-all shadow-sm">
+            <span class="material-symbols-outlined text-[18px]">add</span>
+            <span>Tạo hoạt động mới</span>
+        </a>
+    </div>
+
+    <div class="bg-surface rounded-2xl shadow-sm border border-border-subtle overflow-hidden">
+        @if (Model.Any())
+        {
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 border-b border-border-subtle text-[11px] font-bold uppercase tracking-wider text-status-neutral">
+                        <tr>
+                            <th class="py-3.5 px-5">Tên hoạt động</th>
+                            <th class="py-3.5 px-4">Loại hoạt động</th>
+                            <th class="py-3.5 px-4">Thời gian tổ chức</th>
+                            <th class="py-3.5 px-4">Địa điểm</th>
+                            <th class="py-3.5 px-4">Số lượng ĐK</th>
+                            <th class="py-3.5 px-4">Trạng thái</th>
+                            <th class="py-3.5 px-5 text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border-subtle text-slate-700">
+                        @foreach (var act in Model)
+                        {
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="py-4 px-5">
+                                    <a asp-action="Details" asp-route-id="@act.ActivityId" class="font-bold text-primary hover:underline text-sm block">@act.Name</a>
+                                    @if (!string.IsNullOrEmpty(act.ActivityCode))
+                                    {
+                                        <span class="text-[11px] text-slate-400 font-mono">#@act.ActivityCode</span>
+                                    }
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                                        @act.ActivityTypeName
+                                    </span>
+                                </td>
+                                <td class="py-4 px-4 whitespace-nowrap">
+                                    <div class="font-medium text-slate-800">@act.StartAt.ToString("dd/MM/yyyy HH:mm")</div>
+                                    <div class="text-[11px] text-slate-400">đến @act.EndAt.ToString("HH:mm")</div>
+                                </td>
+                                <td class="py-4 px-4 text-slate-600 max-w-xs truncate">@act.Location</td>
+                                <td class="py-4 px-4">
+                                    <span class="font-bold text-slate-800">@act.CurrentParticipantsCount</span>
+                                    <span class="text-slate-400">/@(act.MaxParticipants?.ToString() ?? "∞")</span>
+                                </td>
+                                <td class="py-4 px-4 whitespace-nowrap">
+                                    @if (act.Status == "DRAFT")
+                                    {
+                                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">Bản nháp (DRAFT)</span>
+                                    }
+                                    else if (act.Status == "PENDING_APPROVAL")
+                                    {
+                                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">Chờ duyệt (PENDING)</span>
+                                    }
+                                    else if (act.Status == "APPROVED")
+                                    {
+                                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-primary">Đã duyệt (APPROVED)</span>
+                                    }
+                                    else if (act.Status == "OPEN")
+                                    {
+                                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">Mở đăng ký (OPEN)</span>
+                                    }
+                                    else if (act.Status == "REJECTED")
+                                    {
+                                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800">Từ chối (REJECTED)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700">@act.Status</span>
+                                    }
+                                </td>
+                                <td class="py-4 px-5 text-right whitespace-nowrap">
+                                    <div class="flex items-center justify-end gap-1.5 flex-wrap">
+                                        @if (act.Status == "DRAFT")
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@act.ActivityId" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors">Sửa</a>
+                                            <form asp-action="Submit" asp-route-id="@act.ActivityId" method="post" class="m-0 inline">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="px-2.5 py-1.5 rounded-lg bg-primary hover:bg-primary-container text-white text-xs font-bold shadow-sm transition-colors" onclick="return confirm('Gửi hoạt động này lên Cán bộ quản lý phê duyệt?')">Gửi duyệt</button>
+                                            </form>
+                                        }
+                                        else if (act.Status == "APPROVED")
+                                        {
+                                            <form asp-action="OpenRegistration" asp-route-id="@act.ActivityId" method="post" class="m-0 inline">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition-colors" onclick="return confirm('Mở đăng ký cho hoạt động này để sinh viên có thể đăng ký?')">Mở đăng ký</button>
+                                            </form>
+                                        }
+
+                                        <!-- UC-019: Xem danh sách sinh viên đăng ký -->
+                                        <a asp-action="Registrations" asp-route-id="@act.ActivityId" class="px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-primary text-xs font-bold transition-colors" title="Danh sách sinh viên đăng ký (UC-019)">
+                                            DS ĐK (@act.CurrentParticipantsCount)
+                                        </a>
+
+                                        <!-- UC-020, UC-021: Phiên điểm danh & Điểm danh thủ công -->
+                                        <a asp-controller="Attendance" asp-action="Sessions" asp-route-activityId="@act.ActivityId" class="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold transition-colors" title="Quản lý phiên điểm danh & Điểm danh thủ công (UC-020, UC-021)">
+                                            Điểm danh
+                                        </a>
+
+                                        <!-- Chi tiết quản trị -->
+                                        <a asp-action="Details" asp-route-id="@act.ActivityId" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors" title="Màn hình điều hành chi tiết">
+                                            Điều hành
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-16">
+                <span class="material-symbols-outlined text-5xl text-slate-300">event_note</span>
+                <p class="text-sm font-bold text-slate-700 mt-3">Ban tổ chức chưa có hoạt động nào</p>
+                <p class="text-xs text-status-neutral mt-1">Bấm "Tạo hoạt động mới" để bắt đầu thiết lập sự kiện đầu tiên.</p>
+                <a asp-action="Create" class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-sm">
+                    <span class="material-symbols-outlined text-[16px]">add</span>
+                    <span>Tạo hoạt động mới</span>
+                </a>
+            </div>
+        }
+    </div>
+</div>

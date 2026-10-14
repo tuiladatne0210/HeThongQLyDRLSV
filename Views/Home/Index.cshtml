@@ -1,0 +1,426 @@
+@model EMS_MVC.ViewModels.Activity.ActivityListViewModel
+@using EMS_MVC.Models.Enums
+@{
+    ViewData["Title"] = "Trang chủ - Cổng Quản lý & Tích điểm Hoạt động";
+    Layout = "_Layout";
+}
+
+<!-- Hero Banner Section -->
+<section class="hero-gradient text-white py-12 py-md-16 px-4" style="background: linear-gradient(135deg, #00288e 0%, #0a36a8 55%, #1e40af 100%);">
+    <div class="max-w-7xl mx-auto container">
+        <div class="row align-items-center g-4 g-lg-5">
+            <!-- Left Hero Content -->
+            <div class="col-lg-7 text-white">
+                <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill bg-white bg-opacity-10 text-white text-xs font-semibold mb-3 border border-white border-opacity-10">
+                    <span class="d-inline-block rounded-circle bg-emerald-400" style="width: 8px; height: 8px;"></span>
+                    <span>Học kỳ 2 (2024 - 2025) • Đang mở đợt tích điểm rèn luyện</span>
+                </div>
+
+                <h1 class="display-6 fw-extrabold tracking-tight mb-3 text-white" style="font-weight: 800; line-height: 1.2;">
+                    HỆ THỐNG QUẢN LÝ &amp; TÍCH ĐIỂM <br />
+                    <span style="color: #bfdbfe;">HOẠT ĐỘNG SINH VIÊN</span>
+                </h1>
+
+                <p class="lead text-light mb-4" style="font-size: 1.05rem; opacity: 0.9; max-width: 600px; line-height: 1.6;">
+                    Nền tảng số hóa toàn diện quy trình tổ chức, đăng ký, điểm danh và tích lũy điểm rèn luyện minh bạch theo chuẩn quy chế Đại học.
+                </p>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <div class="d-flex flex-wrap align-items-center gap-3 pt-1">
+                        @if (User.IsInRole(SystemRoles.Student))
+                        {
+                            <a asp-controller="Student" asp-action="Dashboard" class="btn btn-light text-primary fw-bold px-4 py-2.5 rounded-3 d-inline-flex align-items-center gap-2 shadow-sm">
+                                <span class="material-symbols-outlined text-[20px]">dashboard</span>
+                                <span>Vào Bảng điều khiển sinh viên</span>
+                            </a>
+                        }
+                        else if (User.IsInRole(SystemRoles.Organizer))
+                        {
+                            <a asp-controller="OrganizerActivities" asp-action="Index" class="btn btn-light text-primary fw-bold px-4 py-2.5 rounded-3 d-inline-flex align-items-center gap-2 shadow-sm">
+                                <span class="material-symbols-outlined text-[20px]">event_note</span>
+                                <span>Quản lý hoạt động BTC</span>
+                            </a>
+                        }
+                        else if (User.IsInRole(SystemRoles.Manager))
+                        {
+                            <a asp-controller="ActivityApprovals" asp-action="Index" class="btn btn-light text-primary fw-bold px-4 py-2.5 rounded-3 d-inline-flex align-items-center gap-2 shadow-sm">
+                                <span class="material-symbols-outlined text-[20px]">rule</span>
+                                <span>Hàng đợi phê duyệt</span>
+                            </a>
+                        }
+                        else if (User.IsInRole(SystemRoles.Admin))
+                        {
+                            <a asp-controller="Admin" asp-action="Users" class="btn btn-light text-primary fw-bold px-4 py-2.5 rounded-3 d-inline-flex align-items-center gap-2 shadow-sm">
+                                <span class="material-symbols-outlined text-[20px]">manage_accounts</span>
+                                <span>Quản trị hệ thống</span>
+                            </a>
+                        }
+
+                        <a href="#danh-sach-hoat-dong" class="btn btn-outline-light px-4 py-2.5 rounded-3 d-inline-flex align-items-center gap-2">
+                            <span class="material-symbols-outlined text-[20px]">explore</span>
+                            <span>Khám phá hoạt động</span>
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex flex-wrap align-items-center gap-3 pt-1">
+                        <a href="#danh-sach-hoat-dong" class="btn btn-light text-primary fw-bold px-4 py-2.5 rounded-3 d-inline-flex align-items-center gap-2 shadow-sm">
+                            <span class="material-symbols-outlined text-[20px]">explore</span>
+                            <span>Khám phá hoạt động</span>
+                        </a>
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-primary fw-semibold px-4 py-2.5 rounded-3 d-inline-flex align-items-center gap-2" style="background-color: #1d4ed8; border-color: #3b82f6;">
+                            <span class="material-symbols-outlined text-[20px]">login</span>
+                            <span>Đăng nhập hệ thống</span>
+                        </a>
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-outline-light px-4 py-2.5 rounded-3 d-inline-flex align-items-center gap-2">
+                            <span class="material-symbols-outlined text-[20px]">person_add</span>
+                            <span>Tạo tài khoản mới</span>
+                        </a>
+                    </div>
+                }
+            </div>
+
+            <!-- Right Hero Card: Demo Sandbox or Authenticated Profile Summary -->
+            <div class="col-lg-5">
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <div class="card card-custom p-4 bg-white text-dark shadow-lg border-0" style="border-radius: 1.25rem;">
+                        <div class="d-flex align-items-center justify-content-between pb-3 border-bottom">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-[24px]">verified_user</span>
+                                <span class="fw-bold text-dark text-sm uppercase">Tài khoản đang đăng nhập</span>
+                            </div>
+                            <span class="badge bg-success bg-opacity-10 text-success fw-bold px-2.5 py-1 rounded-pill">Đang kết nối</span>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3 my-3 p-3 bg-light rounded-3">
+                            <div class="w-12 h-12 rounded-circle bg-primary text-white d-flex align-items-center justify-center fw-bold fs-5 shrink-0" style="width: 48px; height: 48px;">
+                                @(User.Identity.Name?.Substring(0, 1).ToUpper() ?? "U")
+                            </div>
+                            <div class="min-w-0">
+                                <div class="fw-bold text-dark text-base">@User.Identity.Name</div>
+                                <div class="text-secondary small font-monospace">
+                                    Vai trò: @string.Join(", ", User.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.Role).Select(c => c.Value))
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            @if (User.IsInRole(SystemRoles.Student))
+                            {
+                                <a asp-controller="Student" asp-action="Dashboard" class="btn btn-primary-custom justify-content-center py-2.5">
+                                    <span class="material-symbols-outlined">dashboard</span>
+                                    <span>Truy cập Bảng điều khiển sinh viên</span>
+                                </a>
+                                <a asp-controller="Student" asp-action="MyActivities" class="btn btn-light justify-content-center py-2 text-dark border">
+                                    <span class="material-symbols-outlined">assignment_turned_in</span>
+                                    <span>Hoạt động tôi đã đăng ký</span>
+                                </a>
+                            }
+                            else if (User.IsInRole(SystemRoles.Organizer))
+                            {
+                                <a asp-controller="OrganizerActivities" asp-action="Index" class="btn btn-primary-custom justify-content-center py-2.5">
+                                    <span class="material-symbols-outlined">event_note</span>
+                                    <span>Truy cập Quản lý hoạt động BTC</span>
+                                </a>
+                            }
+                            else if (User.IsInRole(SystemRoles.Manager))
+                            {
+                                <a asp-controller="ActivityApprovals" asp-action="Index" class="btn btn-primary-custom justify-content-center py-2.5">
+                                    <span class="material-symbols-outlined">rule</span>
+                                    <span>Truy cập Hàng đợi phê duyệt</span>
+                                </a>
+                            }
+                            else if (User.IsInRole(SystemRoles.Admin))
+                            {
+                                <a asp-controller="Admin" asp-action="Users" class="btn btn-primary-custom justify-content-center py-2.5">
+                                    <span class="material-symbols-outlined">manage_accounts</span>
+                                    <span>Truy cập Quản trị người dùng</span>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="card card-custom p-4 bg-white text-dark shadow-lg border-0" style="border-radius: 1.25rem;">
+                        <div class="d-flex align-items-center justify-content-between pb-3 border-bottom">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-[22px]">play_circle</span>
+                                <span class="fw-bold text-sm uppercase text-dark">Thử Nghiệm Nhanh Vai Trò</span>
+                            </div>
+                            <span class="badge bg-primary bg-opacity-10 text-primary fw-bold px-2.5 py-1 rounded-pill">Demo Sandbox</span>
+                        </div>
+
+                        <p class="text-muted small mt-2 mb-3">
+                            Chọn 1 vai trò mẫu bên dưới để được chuyển thẳng vào trang đăng nhập với thông tin nạp sẵn:
+                        </p>
+
+                        <div class="row g-2">
+                            <!-- Student -->
+                            <div class="col-6">
+                                <a asp-controller="Account" asp-action="Login" asp-route-demoRole="student" class="p-2.5 rounded-3 bg-light text-dark d-flex align-items-center gap-2 border text-decoration-none hover:bg-primary-light transition-all">
+                                    <div class="w-8 h-8 rounded-2 bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-center shrink-0" style="width: 32px; height: 32px;">
+                                        <span class="material-symbols-outlined text-[18px]">school</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="fw-bold small text-truncate">Sinh viên</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">sv210145</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Organizer -->
+                            <div class="col-6">
+                                <a asp-controller="Account" asp-action="Login" asp-route-demoRole="organizer" class="p-2.5 rounded-3 bg-light text-dark d-flex align-items-center gap-2 border text-decoration-none hover:bg-success-light transition-all">
+                                    <div class="w-8 h-8 rounded-2 bg-success bg-opacity-10 text-success d-flex align-items-center justify-center shrink-0" style="width: 32px; height: 32px;">
+                                        <span class="material-symbols-outlined text-[18px]">flag</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="fw-bold small text-truncate">Ban Tổ Chức</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">organizer</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Manager -->
+                            <div class="col-6">
+                                <a asp-controller="Account" asp-action="Login" asp-route-demoRole="manager" class="p-2.5 rounded-3 bg-light text-dark d-flex align-items-center gap-2 border text-decoration-none hover:bg-warning-light transition-all">
+                                    <div class="w-8 h-8 rounded-2 bg-warning bg-opacity-10 text-warning d-flex align-items-center justify-center shrink-0" style="width: 32px; height: 32px;">
+                                        <span class="material-symbols-outlined text-[18px]">verified_user</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="fw-bold small text-truncate">Cán bộ Quản lý</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">manager</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Admin -->
+                            <div class="col-6">
+                                <a asp-controller="Account" asp-action="Login" asp-route-demoRole="admin" class="p-2.5 rounded-3 bg-light text-dark d-flex align-items-center gap-2 border text-decoration-none hover:bg-danger-light transition-all">
+                                    <div class="w-8 h-8 rounded-2 bg-danger bg-opacity-10 text-danger d-flex align-items-center justify-center shrink-0" style="width: 32px; height: 32px;">
+                                        <span class="material-symbols-outlined text-[18px]">admin_panel_settings</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="fw-bold small text-truncate">Quản trị viên</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">admin</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 pt-2 border-top text-center">
+                            <span class="text-muted small">Mật khẩu mẫu chung:</span>
+                            <code class="fw-bold text-primary bg-light px-2 py-0.5 rounded small">Student@12345 / Admin@12345</code>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4 Key Platform Stats Grid -->
+<section class="max-w-7xl mx-auto container position-relative" style="margin-top: -2rem; z-index: 20;">
+    <div class="row g-3">
+        <div class="col-6 col-md-3">
+            <div class="card card-custom p-3 shadow-sm d-flex flex-row align-items-center gap-3">
+                <div class="w-12 h-12 rounded-3 bg-primary-light text-primary d-flex align-items-center justify-center shrink-0" style="width: 44px; height: 44px;">
+                    <span class="material-symbols-outlined text-[26px]">groups</span>
+                </div>
+                <div>
+                    <div class="fs-4 fw-extrabold text-dark leading-tight">1,250+</div>
+                    <div class="text-muted small" style="font-size: 0.75rem;">Sinh viên tham gia</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="card card-custom p-3 shadow-sm d-flex flex-row align-items-center gap-3">
+                <div class="w-12 h-12 rounded-3 bg-status-success-bg text-status-success d-flex align-items-center justify-center shrink-0" style="width: 44px; height: 44px;">
+                    <span class="material-symbols-outlined text-[26px]">event_available</span>
+                </div>
+                <div>
+                    <div class="fs-4 fw-extrabold text-dark leading-tight">@(Model.Activities.Count)</div>
+                    <div class="text-muted small" style="font-size: 0.75rem;">Hoạt động trong kỳ</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="card card-custom p-3 shadow-sm d-flex flex-row align-items-center gap-3">
+                <div class="w-12 h-12 rounded-3 bg-status-warning-bg text-status-warning d-flex align-items-center justify-center shrink-0" style="width: 44px; height: 44px;">
+                    <span class="material-symbols-outlined text-[26px]">how_to_reg</span>
+                </div>
+                <div>
+                    <div class="fs-4 fw-extrabold text-dark leading-tight">100%</div>
+                    <div class="text-muted small" style="font-size: 0.75rem;">Điểm danh minh bạch</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="card card-custom p-3 shadow-sm d-flex flex-row align-items-center gap-3">
+                <div class="w-12 h-12 rounded-3 bg-status-info-bg text-status-info d-flex align-items-center justify-center shrink-0" style="width: 44px; height: 44px;">
+                    <span class="material-symbols-outlined text-[26px]">military_tech</span>
+                </div>
+                <div>
+                    <div class="fs-4 fw-extrabold text-dark leading-tight">100 / 100</div>
+                    <div class="text-muted small" style="font-size: 0.75rem;">Khung chuẩn ĐRL</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Active Activities Section -->
+<section id="danh-sach-hoat-dong" class="max-w-7xl mx-auto container py-5">
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-end gap-3 mb-4">
+        <div>
+            <div class="d-inline-flex align-items-center gap-1.5 text-xs font-bold text-primary uppercase tracking-wider mb-1">
+                <span class="material-symbols-outlined text-[16px]">campaign</span>
+                DANH MỤC HOẠT ĐỘNG
+            </div>
+            <h2 class="fs-2 fw-extrabold text-dark tracking-tight mb-1">Hoạt động đang mở đăng ký</h2>
+            <p class="text-secondary small mb-0">Đăng ký tham gia ngay để rèn luyện kỹ năng và tích lũy điểm rèn luyện trong học kỳ</p>
+        </div>
+
+        <a asp-controller="Activities" asp-action="Index" class="btn btn-outline-primary d-inline-flex align-items-center gap-1.5 text-sm fw-bold rounded-pill px-3 py-1.5">
+            <span>Xem tất cả hoạt động</span>
+            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+        </a>
+    </div>
+
+    @if (Model.Activities.Any())
+    {
+        <div class="row g-4">
+            @foreach (var act in Model.Activities)
+            {
+                var max = act.MaxParticipants ?? 100;
+                var current = act.CurrentParticipantsCount;
+                var pct = max > 0 ? (current * 100 / max) : 0;
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card card-custom h-100 overflow-hidden shadow-sm d-flex flex-column">
+                        <!-- Top Ribbon -->
+                        <div class="p-3 bg-light border-bottom d-flex align-items-center justify-content-between">
+                            <span class="badge bg-white text-dark border px-2.5 py-1">
+                                @act.ActivityTypeName
+                            </span>
+                            <span class="badge bg-primary bg-opacity-10 text-primary fw-bold px-2.5 py-1">
+                                +@act.Points ĐRL
+                            </span>
+                        </div>
+
+                        <!-- Main Info -->
+                        <div class="p-4 d-flex flex-column justify-content-between flex-grow-1">
+                            <div>
+                                <h5 class="fw-bold text-dark mb-3">
+                                    <a asp-controller="Activities" asp-action="Details" asp-route-id="@act.ActivityId" class="text-dark text-decoration-none hover:text-primary">
+                                        @act.Name
+                                    </a>
+                                </h5>
+
+                                <div class="text-secondary small d-flex flex-column gap-2 mb-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="material-symbols-outlined text-[16px] text-muted">calendar_today</span>
+                                        <span>@act.StartAt.ToString("dd/MM/yyyy HH:mm") - @act.EndAt.ToString("HH:mm")</span>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="material-symbols-outlined text-[16px] text-muted">location_on</span>
+                                        <span class="text-truncate">@act.Location</span>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="material-symbols-outlined text-[16px] text-muted">group</span>
+                                        <span>Đã đăng ký: <strong class="text-dark">@current / @(act.MaxParticipants?.ToString() ?? "Không giới hạn")</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Progress & Registration status -->
+                            <div class="pt-3 border-top mt-auto">
+                                <div class="progress mb-3" style="height: 6px;">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: @(Math.Min(100, pct))%;" aria-valuenow="@pct" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-between">
+                                    @if (act.StudentRegistrationStatus == "REGISTERED" || act.StudentRegistrationStatus == "ATTENDED")
+                                    {
+                                        <span class="badge badge-open">
+                                            <span class="material-symbols-outlined text-[14px]">check</span> ĐÃ ĐĂNG KÝ
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge @(act.Status == "OPEN" ? "badge-open" : "badge-pending")">
+                                            @(act.Status == "OPEN" ? "ĐANG MỞ ĐĂNG KÝ" : act.Status)
+                                        </span>
+                                    }
+
+                                    <a asp-controller="Activities" asp-action="Details" asp-route-id="@act.ActivityId" class="btn btn-sm btn-primary-custom py-1 px-3">
+                                        <span>Chi tiết</span>
+                                        <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5 bg-white rounded-3 border border-dashed">
+            <span class="material-symbols-outlined fs-1 text-muted">event_busy</span>
+            <p class="text-muted mt-2 mb-0">Hiện chưa có hoạt động nào đang mở đăng ký.</p>
+        </div>
+    }
+</section>
+
+<!-- Quy chế & Hướng dẫn Section -->
+<section id="quy-che" class="bg-white border-top py-5">
+    <div class="max-w-7xl mx-auto container">
+        <div class="text-center max-w-2xl mx-auto mb-5">
+            <h2 class="fs-2 fw-extrabold text-dark tracking-tight mb-2">Quy trình Đăng ký &amp; Tích lũy Điểm</h2>
+            <p class="text-secondary small">4 bước đơn giản để sinh viên ghi nhận trọn vẹn điểm rèn luyện ngoại khóa</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-custom p-4 bg-light border-0 h-100">
+                    <div class="w-10 h-10 rounded-3 bg-primary text-white d-flex align-items-center justify-center fw-bold mb-3" style="width: 40px; height: 40px;">1</div>
+                    <h5 class="fw-bold text-dark">Tra cứu hoạt động</h5>
+                    <p class="text-secondary small mb-0">Xem danh sách các sự kiện học thuật, tình nguyện, thể thao phù hợp với tiêu chí rèn luyện của bạn.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-custom p-4 bg-light border-0 h-100">
+                    <div class="w-10 h-10 rounded-3 bg-primary text-white d-flex align-items-center justify-center fw-bold mb-3" style="width: 40px; height: 40px;">2</div>
+                    <h5 class="fw-bold text-dark">Đăng ký tham gia</h5>
+                    <p class="text-secondary small mb-0">Đăng ký giữ chỗ trong thời gian mở đăng ký. Hệ thống tự động kiểm tra số lượng và điều kiện tham gia.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-custom p-4 bg-light border-0 h-100">
+                    <div class="w-10 h-10 rounded-3 bg-primary text-white d-flex align-items-center justify-center fw-bold mb-3" style="width: 40px; height: 40px;">3</div>
+                    <h5 class="fw-bold text-dark">Tham gia &amp; Điểm danh</h5>
+                    <p class="text-secondary small mb-0">Có mặt tại sự kiện đúng giờ và thực hiện điểm danh với Ban tổ chức để xác nhận sự hiện diện thực tế.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-custom p-4 bg-light border-0 h-100">
+                    <div class="w-10 h-10 rounded-3 bg-primary text-white d-flex align-items-center justify-center fw-bold mb-3" style="width: 40px; height: 40px;">4</div>
+                    <h5 class="fw-bold text-dark">Tích lũy điểm ĐRL</h5>
+                    <p class="text-secondary small mb-0">Điểm rèn luyện được cộng tự động vào hồ sơ cá nhân và cập nhật trực tiếp lên bảng tổng kết học kỳ.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

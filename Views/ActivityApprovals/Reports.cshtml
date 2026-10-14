@@ -1,0 +1,200 @@
+@model EMS_MVC.ViewModels.Manager.ManagerReportViewModel
+@{
+    ViewData["Title"] = "Báo cáo quản lý tổng quan (UC-028)";
+    Layout = "_Layout";
+}
+
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-extrabold text-on-surface tracking-tight">Báo cáo quản lý hoạt động & rèn luyện</h1>
+            <p class="text-xs text-status-neutral mt-1">Tổng hợp số liệu thời gian thực về quy mô hoạt động, tiến độ phê duyệt và số lượt sinh viên tích lũy điểm</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <a asp-action="Index" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors">
+                <span class="material-symbols-outlined text-[16px]">rule</span>
+                <span>Hàng đợi phê duyệt</span>
+            </a>
+            <a asp-controller="Activities" asp-action="Index" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-white hover:bg-primary-container text-xs font-bold transition-colors shadow-sm">
+                <span class="material-symbols-outlined text-[16px]">explore</span>
+                <span>Xem tất cả sự kiện</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 4 KPI Metrics Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+        <!-- Tổng hoạt động -->
+        <div class="bg-surface rounded-2xl p-5 border border-border-subtle shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="font-bold text-status-neutral uppercase tracking-wider text-[11px]">Tổng số hoạt động</span>
+                <div class="w-10 h-10 rounded-xl bg-primary-light text-primary flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[22px]">event_note</span>
+                </div>
+            </div>
+            <div class="mt-3">
+                <span class="text-3xl font-extrabold text-on-surface">@Model.TotalActivities</span>
+                <span class="text-xs text-status-neutral block mt-1">
+                    <span class="text-emerald-700 font-bold">@Model.OpenRegistrationCount</span> đang mở đăng ký
+                </span>
+            </div>
+        </div>
+
+        <!-- Tình trạng phê duyệt -->
+        <div class="bg-surface rounded-2xl p-5 border border-border-subtle shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="font-bold text-status-neutral uppercase tracking-wider text-[11px]">Đã duyệt / Chờ duyệt</span>
+                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[22px]">verified</span>
+                </div>
+            </div>
+            <div class="mt-3">
+                <div class="flex items-baseline gap-2">
+                    <span class="text-3xl font-extrabold text-blue-700">@Model.ApprovedCount</span>
+                    <span class="text-xs text-amber-700 font-bold">(@Model.PendingCount chờ duyệt)</span>
+                </div>
+                <span class="text-xs text-rose-600 block mt-1 font-medium">@Model.RejectedCount hoạt động từ chối</span>
+            </div>
+        </div>
+
+        <!-- Lượt sinh viên đăng ký & tham gia -->
+        <div class="bg-surface rounded-2xl p-5 border border-border-subtle shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="font-bold text-status-neutral uppercase tracking-wider text-[11px]">Lượt SV tham gia</span>
+                <div class="w-10 h-10 rounded-xl bg-status-success-bg text-status-success flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[22px]">group</span>
+                </div>
+            </div>
+            <div class="mt-3">
+                <div class="flex items-baseline gap-2">
+                    <span class="text-3xl font-extrabold text-status-success">@Model.TotalParticipantsAttended</span>
+                    <span class="text-xs text-status-neutral">/ @Model.TotalParticipantsRegistered ĐK</span>
+                </div>
+                <span class="text-xs text-status-success block mt-1 font-semibold">Đã xác nhận điểm danh</span>
+            </div>
+        </div>
+
+        <!-- Tổng điểm rèn luyện đã cấp -->
+        <div class="bg-surface rounded-2xl p-5 border border-border-subtle shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="font-bold text-status-neutral uppercase tracking-wider text-[11px]">Tổng điểm ĐRL đã cấp</span>
+                <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[22px]">military_tech</span>
+                </div>
+            </div>
+            <div class="mt-3">
+                <span class="text-3xl font-extrabold text-amber-700">+@Model.TotalPointsAwarded</span>
+                <span class="text-xs text-status-neutral block mt-1">Ghi nhận vào sổ giao dịch</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phân loại hoạt động & Thống kê theo loại -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Cột trái: Bảng phân bố loại hoạt động -->
+        <div class="lg:col-span-1 bg-surface rounded-2xl p-5 border border-border-subtle shadow-sm space-y-4">
+            <h3 class="font-bold text-on-surface text-sm flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-[20px]">category</span>
+                <span>Phân bố theo Loại hoạt động</span>
+            </h3>
+
+            <div class="space-y-3">
+                @foreach (var t in Model.TypeStats)
+                {
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between text-xs">
+                        <div>
+                            <span class="font-bold text-slate-800 block">@t.TypeName</span>
+                            <span class="text-[11px] text-slate-500">@t.ParticipantCount lượt sinh viên tham gia</span>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full bg-primary/10 text-primary font-bold text-xs">
+                            @t.ActivityCount HĐ
+                        </span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Cột phải: Bảng hoạt động gần đây & tiến độ -->
+        <div class="lg:col-span-2 bg-surface rounded-2xl border border-border-subtle shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-border-subtle flex items-center justify-between">
+                <h3 class="font-bold text-on-surface text-sm flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-[20px]">view_list</span>
+                    <span>Hoạt động trong hệ thống</span>
+                </h3>
+                <span class="text-xs text-status-neutral">Hiển thị 10 hoạt động gần nhất</span>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 border-b border-border-subtle text-[11px] font-bold uppercase tracking-wider text-status-neutral">
+                        <tr>
+                            <th class="py-3 px-4">Tên hoạt động</th>
+                            <th class="py-3 px-3">Loại</th>
+                            <th class="py-3 px-3">Người tạo</th>
+                            <th class="py-3 px-3">Điểm</th>
+                            <th class="py-3 px-3">Trạng thái</th>
+                            <th class="py-3 px-4 text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border-subtle text-slate-700">
+                        @foreach (var act in Model.RecentActivities)
+                        {
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="py-3.5 px-4 font-bold text-slate-900">
+                                    @act.Name
+                                    @if (!string.IsNullOrEmpty(act.ActivityCode))
+                                    {
+                                        <span class="text-[10px] text-slate-400 font-mono block">#@act.ActivityCode</span>
+                                    }
+                                </td>
+                                <td class="py-3.5 px-3">
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-700">
+                                        @act.ActivityTypeName
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-3 text-slate-600">@act.OrganizerName</td>
+                                <td class="py-3.5 px-3 font-bold text-primary">+@act.Points</td>
+                                <td class="py-3.5 px-3 whitespace-nowrap">
+                                    @if (act.Status == "PENDING_APPROVAL")
+                                    {
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">Chờ duyệt</span>
+                                    }
+                                    else if (act.Status == "APPROVED")
+                                    {
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-primary">Đã duyệt</span>
+                                    }
+                                    else if (act.Status == "OPEN_REGISTRATION" || act.Status == "OPEN")
+                                    {
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">Mở ĐK</span>
+                                    }
+                                    else if (act.Status == "REJECTED")
+                                    {
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800">Từ chối</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">@act.Status</span>
+                                    }
+                                </td>
+                                <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                                    @if (act.Status == "PENDING_APPROVAL")
+                                    {
+                                        <a asp-action="Review" asp-route-id="@act.ActivityId" class="px-2.5 py-1 rounded-lg bg-primary hover:bg-primary-container text-white font-bold text-xs shadow-sm">
+                                            Duyệt ngay
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="Activities" asp-action="Details" asp-route-id="@act.ActivityId" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">
+                                            Xem
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

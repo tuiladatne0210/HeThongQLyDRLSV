@@ -1,0 +1,166 @@
+@model EMS_MVC.ViewModels.Activity.ActivityListViewModel
+@{
+    ViewData["Title"] = "Danh mục Hoạt động Sinh viên";
+    Layout = "_Layout";
+}
+
+<div class="space-y-6">
+    <!-- Top Header Banner (Stitch Màn hình 05) -->
+    <div class="relative overflow-hidden rounded-2xl bg-surface p-6 shadow-sm border border-border-subtle">
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div class="space-y-1.5">
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-light text-primary text-xs font-semibold uppercase tracking-wider">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                        Đang mở đợt tích điểm
+                    </span>
+                    <span class="text-xs text-status-neutral">• Học kỳ 2 (2024 - 2025)</span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-on-surface tracking-tight">Danh mục Hoạt động Sinh viên</h1>
+                <p class="text-xs sm:text-sm text-status-neutral">Tra cứu, theo dõi và đăng ký tham gia các hoạt động tích điểm rèn luyện.</p>
+            </div>
+
+            <!-- Quick Summary Badges -->
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 bg-slate-50 border border-border-subtle px-4 py-2.5 rounded-xl">
+                    <div class="w-10 h-10 rounded-lg bg-status-info-bg text-status-info flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[22px]">event_available</span>
+                    </div>
+                    <div>
+                        <div class="text-xl font-extrabold text-on-surface leading-tight">@Model.Activities.Count</div>
+                        <div class="text-xs text-status-neutral">Hoạt động trong kỳ</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-primary-light/50 pointer-events-none blur-3xl"></div>
+    </div>
+
+    <!-- Advanced Filter Bar (Stitch Screen 05) -->
+    <div class="bg-surface rounded-2xl p-5 shadow-sm border border-border-subtle">
+        <form method="get" asp-action="Index">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3 items-end">
+                <!-- Search input -->
+                <div class="lg:col-span-5 flex flex-col gap-1.5">
+                    <label class="text-xs font-semibold text-on-surface flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px] text-status-neutral">search</span>
+                        Từ khóa tìm kiếm
+                    </label>
+                    <div class="relative">
+                        <input name="search" value="@Model.SearchKeyword" class="w-full h-10 pl-9 pr-3 rounded-xl bg-slate-50 text-on-surface text-sm border border-border-subtle placeholder-status-neutral focus:outline-none focus:border-primary transition-all" placeholder="Tìm tên hoạt động, địa điểm, chủ đề..." type="text"/>
+                        <span class="material-symbols-outlined absolute left-2.5 top-2.5 text-[18px] text-status-neutral pointer-events-none">manage_search</span>
+                    </div>
+                </div>
+
+                <!-- Activity Type Filter -->
+                <div class="lg:col-span-3 flex flex-col gap-1.5">
+                    <label class="text-xs font-semibold text-on-surface flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px] text-status-neutral">category</span>
+                        Loại hoạt động
+                    </label>
+                    <select name="typeId" class="w-full h-10 px-3 rounded-xl bg-slate-50 text-on-surface text-sm border border-border-subtle focus:outline-none focus:border-primary cursor-pointer transition-all" asp-items="ViewBag.ActivityTypes">
+                        <option value="">-- Tất cả loại hoạt động --</option>
+                    </select>
+                </div>
+
+                <!-- Semester Filter -->
+                <div class="lg:col-span-2 flex flex-col gap-1.5">
+                    <label class="text-xs font-semibold text-on-surface flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px] text-status-neutral">calendar_month</span>
+                        Học kỳ
+                    </label>
+                    <select name="semesterId" class="w-full h-10 px-3 rounded-xl bg-slate-50 text-on-surface text-sm border border-border-subtle focus:outline-none focus:border-primary cursor-pointer transition-all" asp-items="ViewBag.Semesters">
+                        <option value="">-- Tất cả học kỳ --</option>
+                    </select>
+                </div>
+
+                <!-- Actions -->
+                <div class="lg:col-span-2 flex gap-2">
+                    <button type="submit" class="flex-1 h-10 rounded-xl bg-primary text-white hover:bg-primary-container font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-1.5">
+                        <span class="material-symbols-outlined text-[18px]">filter_list</span>
+                        <span>Lọc</span>
+                    </button>
+                    <a asp-action="Index" class="h-10 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-status-neutral flex items-center justify-center transition-colors" title="Đặt lại bộ lọc">
+                        <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Activities Cards Grid -->
+    @if (Model.Activities.Any())
+    {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach (var act in Model.Activities)
+            {
+                var max = act.MaxParticipants ?? 100;
+                var current = act.CurrentParticipantsCount;
+                var pct = max > 0 ? (current * 100 / max) : 0;
+
+                <div class="bg-surface rounded-2xl border border-border-subtle shadow-sm hover:shadow-lg transition-all flex flex-col overflow-hidden group">
+                    <!-- Card Top Ribbon -->
+                    <div class="p-4 bg-slate-50 border-b border-border-subtle flex items-center justify-between">
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white border border-border-subtle text-slate-700">
+                            @act.ActivityTypeName
+                        </span>
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-primary">
+                            +@act.Points ĐRL
+                        </span>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-base text-on-surface line-clamp-2 group-hover:text-primary transition-colors mb-3">
+                                <a asp-action="Details" asp-route-id="@act.ActivityId" class="no-underline text-inherit">
+                                    @act.Name
+                                </a>
+                            </h3>
+
+                            <div class="space-y-2 text-xs text-status-neutral">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[16px] text-slate-400">calendar_today</span>
+                                    <span>@act.StartAt.ToString("dd/MM/yyyy HH:mm") - @act.EndAt.ToString("HH:mm")</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[16px] text-slate-400">location_on</span>
+                                    <span class="truncate">@act.Location</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[16px] text-slate-400">group</span>
+                                    <span>Chỉ tiêu: <strong class="text-slate-700">@current / @(act.MaxParticipants?.ToString() ?? "Không giới hạn")</strong></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Footer -->
+                        <div class="mt-5 pt-4 border-t border-border-subtle">
+                            <div class="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden mb-3">
+                                <div class="h-full bg-primary rounded-full" style="width: @(Math.Min(100, pct))%;"></div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-semibold @(act.Status == "OPEN" ? "text-emerald-600" : "text-amber-600")">
+                                    @(act.Status == "OPEN" ? "ĐANG MỞ ĐĂNG KÝ" : act.Status)
+                                </span>
+                                <a asp-action="Details" asp-route-id="@act.ActivityId" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary-container text-xs font-bold transition-all shadow-sm">
+                                    <span>Xem chi tiết</span>
+                                    <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-16 bg-surface rounded-2xl border border-dashed border-border-subtle">
+            <span class="material-symbols-outlined text-5xl text-slate-300">search_off</span>
+            <p class="text-slate-700 font-bold text-sm mt-3">Không tìm thấy hoạt động nào phù hợp</p>
+            <p class="text-xs text-status-neutral mt-1">Thử thay đổi từ khóa hoặc bộ lọc học kỳ, loại hoạt động.</p>
+        </div>
+    }
+</div>

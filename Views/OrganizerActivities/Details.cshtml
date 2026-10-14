@@ -1,0 +1,171 @@
+@model EMS_MVC.ViewModels.Activity.ActivityDetailViewModel
+@{
+    ViewData["Title"] = "Quản trị hoạt động - " + Model.Name;
+    Layout = "_Layout";
+}
+
+<div class="mb-3">
+    <a asp-action="Index" class="text-secondary text-decoration-none small d-inline-flex align-items-center gap-1">
+        <span class="material-symbols-outlined fs-6">arrow_back</span> Quay lại danh sách quản lý
+    </a>
+</div>
+
+<div class="row g-4">
+    <!-- Cột trái: Thông tin hoạt động & Workflow Action Bar -->
+    <div class="col-lg-8">
+        <div class="card card-custom p-4 mb-4 shadow-sm">
+            <!-- Header & Trạng thái -->
+            <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                <div>
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <span class="badge bg-light text-dark border">@Model.ActivityTypeName</span>
+                        @if (Model.Status == "DRAFT")
+                        {
+                            <span class="badge badge-draft">Bản nháp (DRAFT)</span>
+                        }
+                        else if (Model.Status == "PENDING_APPROVAL")
+                        {
+                            <span class="badge badge-pending">Đang chờ Manager duyệt</span>
+                        }
+                        else if (Model.Status == "APPROVED")
+                        {
+                            <span class="badge badge-open">Đã duyệt (Chờ mở nhận ĐK)</span>
+                        }
+                        else if (Model.Status == "OPEN_REGISTRATION")
+                        {
+                            <span class="badge badge-open">Đang mở đăng ký</span>
+                        }
+                        else if (Model.Status == "REJECTED")
+                        {
+                            <span class="badge badge-rejected">Bị từ chối</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">@Model.Status</span>
+                        }
+                    </div>
+                    <h3 class="fw-bold text-dark mb-1">@Model.Name</h3>
+                    @if (!string.IsNullOrEmpty(Model.ActivityCode))
+                    {
+                        <span class="text-muted small">Mã sự kiện: <code>@Model.ActivityCode</code></span>
+                    }
+                </div>
+                <span class="badge badge-open fs-6 px-3 py-2 fw-bold">+@Model.Points ĐRL</span>
+            </div>
+
+            <!-- Ý kiến từ chối nếu có -->
+            @if (!string.IsNullOrEmpty(Model.ReviewNote) && Model.Status == "REJECTED")
+            {
+                <div class="alert alert-danger small d-flex align-items-start gap-2 my-3">
+                    <span class="material-symbols-outlined fs-5">error</span>
+                    <div>
+                        <strong class="d-block">Lý do từ chối từ Ban Quản lý:</strong>
+                        <span>@Model.ReviewNote</span>
+                    </div>
+                </div>
+            }
+
+            <hr class="my-3 text-muted" />
+
+            <!-- Workflow Action Buttons theo trạng thái -->
+            <div class="p-3 bg-light rounded-3 mb-4 d-flex flex-wrap gap-2 align-items-center justify-content-between">
+                <div>
+                    <span class="small fw-semibold text-dark d-block">Quy trình xử lý hoạt động:</span>
+                    <small class="text-muted">Các thao tác có hiệu lực theo trạng thái hiện tại</small>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+                    <!-- Gửi duyệt: Chỉ hiển thị khi DRAFT hoặc REJECTED -->
+                    @if (Model.Status == "DRAFT" || Model.Status == "REJECTED")
+                    {
+                        <a asp-action="Edit" asp-route-id="@Model.ActivityId" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
+                            <span class="material-symbols-outlined fs-6">edit</span> Sửa thông tin
+                        </a>
+
+                        <form asp-action="Submit" asp-route-id="@Model.ActivityId" method="post" class="d-inline" onsubmit="return confirm('Gửi hoạt động này lên Ban Quản lý để xét duyệt?');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-warning btn-sm fw-bold d-flex align-items-center gap-1 text-dark">
+                                <span class="material-symbols-outlined fs-6">send</span> Gửi duyệt
+                            </button>
+                        </form>
+                    }
+
+                    <!-- Mở đăng ký: Chỉ hiển thị khi APPROVED -->
+                    @if (Model.Status == "APPROVED")
+                    {
+                        <form asp-action="OpenRegistration" asp-route-id="@Model.ActivityId" method="post" class="d-inline" onsubmit="return confirm('Chính thức mở đăng ký cho sinh viên?');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-success btn-sm fw-bold d-flex align-items-center gap-1 text-white">
+                                <span class="material-symbols-outlined fs-6">lock_open</span> Bấm Mở đăng ký
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+
+            <!-- Mô tả & Thông tin thời gian -->
+            <div class="mb-4">
+                <h6 class="fw-bold text-dark mb-2">Mục tiêu & Nội dung</h6>
+                <div class="text-secondary small" style="white-space: pre-line; line-height: 1.6;">
+                    @(Model.Description ?? "Chưa có mô tả chi tiết.")
+                </div>
+            </div>
+
+            <div class="row g-3 p-3 bg-light rounded-3">
+                <div class="col-md-6 small">
+                    <span class="text-muted d-block" style="font-size: 0.72rem;">THỜI GIAN HOẠT ĐỘNG</span>
+                    <strong>@Model.StartAt.ToString("dd/MM/yyyy HH:mm") - @Model.EndAt.ToString("HH:mm")</strong>
+                </div>
+                <div class="col-md-6 small">
+                    <span class="text-muted d-block" style="font-size: 0.72rem;">ĐỊA ĐIỂM</span>
+                    <strong>@Model.Location</strong>
+                </div>
+                <div class="col-md-6 small">
+                    <span class="text-muted d-block" style="font-size: 0.72rem;">KHUNG NHẬN ĐĂNG KÝ</span>
+                    <strong>@Model.RegistrationStartAt.ToString("dd/MM/yyyy") - @Model.RegistrationEndAt.ToString("dd/MM/yyyy HH:mm")</strong>
+                </div>
+                <div class="col-md-6 small">
+                    <span class="text-muted d-block" style="font-size: 0.72rem;">CHẾ ĐỘ ĐIỂM DANH</span>
+                    <strong>@(Model.AttendanceMode == "CHECKIN_ONLY" ? "Check-in đơn" : "Check-in & Check-out")</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cột phải: Các chức năng điều hành hoạt động -->
+    <div class="col-lg-4">
+        <!-- Card Điều hành: Danh sách đăng ký & Phiên điểm danh -->
+        <div class="card card-custom p-4 shadow-sm mb-4">
+            <h5 class="fw-bold text-dark mb-3">Điều hành hoạt động</h5>
+
+            <!-- Quản lý đăng ký -->
+            <div class="p-3 bg-light rounded-3 mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="small fw-semibold text-dark">Sinh viên đăng ký:</span>
+                    <span class="badge bg-primary text-white">@Model.CurrentParticipantsCount / @(Model.MaxParticipants?.ToString() ?? "∞")</span>
+                </div>
+                <a asp-action="Registrations" asp-route-id="@Model.ActivityId" class="btn btn-outline-primary btn-sm w-100 mt-2 d-flex align-items-center justify-content-center gap-1">
+                    <span class="material-symbols-outlined fs-6">list_alt</span>
+                    <span>Xem danh sách đăng ký</span>
+                </a>
+            </div>
+
+            <!-- Quản lý điểm danh -->
+            <div class="p-3 bg-light rounded-3 mb-3">
+                <div class="small fw-semibold text-dark mb-1">Phiên điểm danh & Check-in:</div>
+                <p class="text-muted small mb-2" style="font-size: 0.75rem;">Tạo phiên, điểm danh thủ công hoặc đóng phiên</p>
+                <a asp-controller="Attendance" asp-action="Sessions" asp-route-activityId="@Model.ActivityId" class="btn btn-primary-custom btn-sm w-100 justify-content-center py-2">
+                    <span class="material-symbols-outlined fs-6">fact_check</span>
+                    <span>Quản lý phiên điểm danh</span>
+                </a>
+            </div>
+
+            <div class="p-3 bg-warning-subtle text-warning-emphasis rounded-3 small">
+                <div class="fw-bold d-flex align-items-center gap-1 mb-1">
+                    <span class="material-symbols-outlined fs-6">shield</span> Điểm danh thủ công (BR04):
+                </div>
+                <span>Hệ thống chỉ cho phép ghi nhận điểm danh đối với sinh viên có đăng ký hợp lệ và thuộc hoạt động này.</span>
+            </div>
+        </div>
+    </div>
+</div>

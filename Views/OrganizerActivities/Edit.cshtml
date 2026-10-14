@@ -1,0 +1,128 @@
+@model EMS_MVC.ViewModels.Activity.ActivityCreateEditViewModel
+@{
+    ViewData["Title"] = "Chỉnh sửa hoạt động";
+    Layout = "_Layout";
+}
+
+<div class="mb-3">
+    <a asp-action="Details" asp-route-id="@Model.ActivityId" class="text-secondary text-decoration-none small d-inline-flex align-items-center gap-1">
+        <span class="material-symbols-outlined fs-6">arrow_back</span> Quay lại chi tiết hoạt động
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="card card-custom p-4 shadow-sm">
+            <h4 class="fw-bold text-dark mb-1">CHỈNH SỬA HOẠT ĐỘNG</h4>
+            <p class="text-secondary small mb-3">Chỉ được chỉnh sửa khi hoạt động ở trạng thái Bản nháp (DRAFT) hoặc Bị từ chối (REJECTED)</p>
+
+            @if (!string.IsNullOrEmpty(Model.ReviewNote))
+            {
+                <div class="alert alert-warning small d-flex align-items-start gap-2 mb-4">
+                    <span class="material-symbols-outlined fs-5">feedback</span>
+                    <div>
+                        <strong class="d-block">Ý kiến / Lý do từ chối từ Ban Quản lý:</strong>
+                        <span>@Model.ReviewNote</span>
+                    </div>
+                </div>
+            }
+
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="ActivityId" />
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger small py-2 px-3 mb-3"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <label asp-for="Name" class="form-label small fw-semibold text-secondary"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="ActivityCode" class="form-label small fw-semibold text-secondary"></label>
+                        <input asp-for="ActivityCode" class="form-control" />
+                        <span asp-validation-for="ActivityCode" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="ActivityTypeId" class="form-label small fw-semibold text-secondary"></label>
+                        <select asp-for="ActivityTypeId" asp-items="ViewBag.ActivityTypes" class="form-select"></select>
+                        <span asp-validation-for="ActivityTypeId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="SemesterId" class="form-label small fw-semibold text-secondary"></label>
+                        <select asp-for="SemesterId" asp-items="ViewBag.Semesters" class="form-select"></select>
+                        <span asp-validation-for="SemesterId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Location" class="form-label small fw-semibold text-secondary"></label>
+                        <input asp-for="Location" class="form-control" />
+                        <span asp-validation-for="Location" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Description" class="form-label small fw-semibold text-secondary"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="StartAt" class="form-label small fw-semibold text-secondary"></label>
+                        <input asp-for="StartAt" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="StartAt" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="EndAt" class="form-label small fw-semibold text-secondary"></label>
+                        <input asp-for="EndAt" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="EndAt" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="RegistrationStartAt" class="form-label small fw-semibold text-secondary"></label>
+                        <input asp-for="RegistrationStartAt" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="RegistrationStartAt" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="RegistrationEndAt" class="form-label small fw-semibold text-secondary"></label>
+                        <input asp-for="RegistrationEndAt" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="RegistrationEndAt" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="MaxParticipants" class="form-label small fw-semibold text-secondary"></label>
+                        <input asp-for="MaxParticipants" type="number" class="form-control" />
+                        <span asp-validation-for="MaxParticipants" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="PointOverride" class="form-label small fw-semibold text-secondary"></label>
+                        <input asp-for="PointOverride" type="number" class="form-control" />
+                        <span asp-validation-for="PointOverride" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="AttendanceMode" class="form-label small fw-semibold text-secondary"></label>
+                        <select asp-for="AttendanceMode" class="form-select">
+                            <option value="CHECKIN_ONLY">Chỉ Check-in</option>
+                            <option value="CHECKIN_CHECKOUT">Check-in và Check-out</option>
+                        </select>
+                        <span asp-validation-for="AttendanceMode" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+                    <a asp-action="Details" asp-route-id="@Model.ActivityId" class="btn btn-outline-secondary">Hủy</a>
+                    <button type="submit" class="btn btn-primary-custom">
+                        <span class="material-symbols-outlined">save</span>
+                        <span>Lưu thay đổi</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

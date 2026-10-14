@@ -1,0 +1,306 @@
+@model EMS_MVC.ViewModels.Student.StudentDashboardViewModel
+@{
+    ViewData["Title"] = "Tổng quan sinh viên";
+    Layout = "_Layout";
+}
+
+<div class="space-y-6">
+    <!-- Top Welcome Banner & Student Status Bar (Stitch Màn hình 04) -->
+    <section class="relative overflow-hidden rounded-2xl bg-surface p-6 shadow-sm border border-border-subtle">
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div class="space-y-1.5">
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-status-success-bg text-status-success text-xs font-semibold">
+                        <span class="w-2 h-2 rounded-full bg-status-success animate-pulse"></span>
+                        @Model.SemesterName
+                    </span>
+                    <span class="text-xs text-status-neutral">• Trạng thái: Đang theo học</span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-on-surface tracking-tight">
+                    Xin chào, <span class="text-primary font-bold">@Model.FullName</span>!
+                </h1>
+                <p class="text-xs sm:text-sm text-status-neutral flex flex-wrap items-center gap-x-3 gap-y-1">
+                    <span>MSSV: <strong class="text-on-surface font-semibold font-mono">@Model.StudentCode</strong></span>
+                    <span>•</span>
+                    <span>Lớp: <strong class="text-on-surface font-semibold">@Model.ClassName</strong></span>
+                    <span>•</span>
+                    <span>Khoa: <strong class="text-on-surface font-semibold">@Model.DepartmentName</strong></span>
+                </p>
+            </div>
+
+            <!-- Quick Action Shortcuts Inline -->
+            <div class="flex flex-wrap items-center gap-2 pt-2 lg:pt-0">
+                <a asp-controller="Activities" asp-action="Index" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-container text-xs font-bold shadow-sm transition-all active:scale-95">
+                    <span class="material-symbols-outlined text-[18px]">search</span>
+                    <span>Tra cứu hoạt động mới</span>
+                </a>
+                <a asp-controller="Student" asp-action="MyActivities" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface-container-low hover:bg-surface-container text-primary text-xs font-bold transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">assignment_turned_in</span>
+                    <span>Hoạt động đã đăng ký</span>
+                </a>
+            </div>
+        </div>
+        <!-- Ambient decorative glow -->
+        <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-primary-light/60 pointer-events-none blur-3xl"></div>
+    </section>
+
+    <!-- Metric KPI Cards (4 Cards Grid - Stitch Screen 04) -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <!-- Card 1: Tổng điểm rèn luyện -->
+        <div class="bg-surface rounded-2xl p-5 shadow-sm border border-border-subtle flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-status-neutral">Tổng điểm rèn luyện</span>
+                    <div class="w-9 h-9 rounded-xl bg-primary-light flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined text-[20px]">military_tech</span>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-baseline gap-2">
+                    <span class="text-3xl font-extrabold text-on-surface">@Model.TotalPoints</span>
+                    <span class="text-xs text-status-neutral font-medium">/ 100 điểm</span>
+                    <span class="ml-auto inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-status-success-bg text-status-success text-[11px] font-bold">
+                        <span class="material-symbols-outlined text-[12px]">arrow_upward</span>Đang tích lũy
+                    </span>
+                </div>
+            </div>
+            <div class="mt-4 space-y-1.5">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="font-bold text-primary">Xếp loại: @Model.Classification</span>
+                    <span class="text-status-neutral font-medium">@(Model.TotalPoints)% chỉ tiêu</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                    <div class="h-full bg-primary rounded-full transition-all duration-700" style="width: @(Math.Min(100, Model.TotalPoints))%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Hoạt động đã tham gia -->
+        <div class="bg-surface rounded-2xl p-5 shadow-sm border border-border-subtle flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-status-neutral">Hoạt động tham gia</span>
+                    <div class="w-9 h-9 rounded-xl bg-status-success-bg flex items-center justify-center text-status-success">
+                        <span class="material-symbols-outlined text-[20px]">task_alt</span>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-baseline gap-2">
+                    <span class="text-3xl font-extrabold text-on-surface">@Model.AttendedActivitiesCount</span>
+                    <span class="text-xs text-status-neutral font-medium">hoạt động</span>
+                </div>
+            </div>
+            <div class="mt-4 flex items-center justify-between pt-2 border-t border-slate-100">
+                <span class="inline-flex items-center gap-1 text-xs text-status-success font-medium">
+                    <span class="material-symbols-outlined text-[16px]">verified</span> Đã xác nhận điểm danh
+                </span>
+                <a asp-action="MyActivities" class="text-xs font-bold text-primary hover:underline">Chi tiết →</a>
+            </div>
+        </div>
+
+        <!-- Card 3: Hoạt động sắp diễn ra -->
+        <div class="bg-surface rounded-2xl p-5 shadow-sm border border-border-subtle flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-status-neutral">Hoạt động sắp tới</span>
+                    <div class="w-9 h-9 rounded-xl bg-status-info-bg flex items-center justify-center text-status-info">
+                        <span class="material-symbols-outlined text-[20px]">calendar_month</span>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-baseline gap-2">
+                    <span class="text-3xl font-extrabold text-on-surface">@Model.RegisteredUpcomingCount</span>
+                    <span class="text-xs text-status-neutral font-medium">đã giữ chỗ</span>
+                </div>
+            </div>
+            <div class="mt-4 flex items-center justify-between pt-2 border-t border-slate-100">
+                <span class="inline-flex items-center gap-1 text-xs text-status-info font-medium">
+                    <span class="material-symbols-outlined text-[16px]">schedule</span> Sắp diễn ra
+                </span>
+                <a asp-action="MyActivities" class="text-xs font-bold text-primary hover:underline">Lịch trình →</a>
+            </div>
+        </div>
+
+        <!-- Card 4: Xếp loại & Khung đánh giá -->
+        <div class="bg-surface rounded-2xl p-5 shadow-sm border border-border-subtle flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-status-neutral">Khung Đánh Giá</span>
+                    <div class="w-9 h-9 rounded-xl bg-status-warning-bg flex items-center justify-center text-status-warning">
+                        <span class="material-symbols-outlined text-[20px]">leaderboard</span>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-baseline gap-2">
+                    <span class="text-2xl font-extrabold text-on-surface">@Model.Classification</span>
+                </div>
+            </div>
+            <div class="mt-4 flex items-center justify-between pt-2 border-t border-slate-100">
+                <span class="inline-flex items-center gap-1 text-xs font-semibold text-status-warning">
+                    <span class="material-symbols-outlined text-[16px]">star</span> Quy chế DRL
+                </span>
+                <span class="text-xs text-status-neutral">Chuẩn ĐH</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2 Columns Grid: Upcoming activities & History -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Left: Upcoming Registered Activities (8 Cols) -->
+        <div class="lg:col-span-8 space-y-6">
+            <section class="bg-surface rounded-2xl p-6 shadow-sm border border-border-subtle space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-border-subtle">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-2 h-6 rounded-full bg-primary"></div>
+                        <div>
+                            <h2 class="text-lg font-bold text-on-surface">Hoạt động sắp diễn ra của bạn</h2>
+                            <p class="text-xs text-status-neutral">Theo dõi thời gian và địa điểm để tham dự điểm danh đúng giờ</p>
+                        </div>
+                    </div>
+                    <a asp-action="MyActivities" class="text-xs font-bold text-primary hover:underline">Xem tất cả</a>
+                </div>
+
+                @if (Model.UpcomingActivities.Any())
+                {
+                    <div class="space-y-3">
+                        @foreach (var item in Model.UpcomingActivities)
+                        {
+                            <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 hover:border-primary/30 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-white text-primary border border-border-subtle">
+                                            +@item.Points ĐRL
+                                        </span>
+                                        <span class="text-xs font-semibold text-slate-700">@item.Name</span>
+                                    </div>
+                                    <div class="flex flex-wrap items-center gap-3 text-xs text-status-neutral">
+                                        <span class="flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                            @item.StartAt.ToString("dd/MM/yyyy HH:mm")
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[14px]">location_on</span>
+                                            @item.Location
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-primary">
+                                        @(item.RegistrationStatus ?? "ĐÃ ĐĂNG KÝ")
+                                    </span>
+                                    <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.ActivityId" class="px-3 py-1.5 rounded-lg bg-white border border-border-subtle hover:bg-slate-50 text-xs font-bold text-slate-700 transition-colors">
+                                        Chi tiết
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-8 bg-slate-50 rounded-xl border border-dashed border-border-subtle">
+                        <span class="material-symbols-outlined text-3xl text-slate-300">event_available</span>
+                        <p class="text-xs text-status-neutral mt-1">Bạn chưa đăng ký hoạt động sắp diễn ra nào.</p>
+                        <a asp-controller="Activities" asp-action="Index" class="inline-flex items-center gap-1.5 mt-2 px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-bold shadow-sm">
+                            <span>Khám phá hoạt động ngay</span>
+                            <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                        </a>
+                    </div>
+                }
+            </section>
+
+            <!-- Hoạt động mới đang mở đăng ký -->
+            <section class="bg-surface rounded-2xl p-6 shadow-sm border border-border-subtle space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-border-subtle">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-2 h-6 rounded-full bg-status-success"></div>
+                        <div>
+                            <h2 class="text-lg font-bold text-on-surface">Hoạt động mới đang mở đăng ký</h2>
+                            <p class="text-xs text-status-neutral">Nhanh tay đăng ký giữ chỗ trước khi hết hạn</p>
+                        </div>
+                    </div>
+                    <a asp-controller="Activities" asp-action="Index" class="text-xs font-bold text-primary hover:underline">Xem thêm</a>
+                </div>
+
+                @if (Model.OpenRegistrationActivities.Any())
+                {
+                    <div class="space-y-3">
+                        @foreach (var item in Model.OpenRegistrationActivities)
+                        {
+                            <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 hover:border-primary/30 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-white text-primary border border-border-subtle">
+                                            +@item.Points ĐRL
+                                        </span>
+                                        <span class="text-xs font-semibold text-slate-700">@item.Name</span>
+                                    </div>
+                                    <div class="flex flex-wrap items-center gap-3 text-xs text-status-neutral">
+                                        <span class="flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[14px]">schedule</span>
+                                            Hạn ĐK: @item.RegistrationEndAt.ToString("dd/MM/yyyy HH:mm")
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[14px]">location_on</span>
+                                            @item.Location
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="shrink-0">
+                                    <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.ActivityId" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary-container text-xs font-bold transition-all shadow-sm">
+                                        <span>Đăng ký ngay</span>
+                                        <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-6 text-xs text-status-neutral">
+                        Hiện chưa có hoạt động mới nào đang mở đăng ký.
+                    </div>
+                }
+            </section>
+        </div>
+
+        <!-- Right: Rules & Academic Guidance (4 Cols) -->
+        <div class="lg:col-span-4 space-y-6">
+            <!-- Academic Standing Card -->
+            <div class="bg-surface rounded-2xl p-6 shadow-sm border border-border-subtle space-y-4">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-[22px]">verified</span>
+                    <h3 class="font-bold text-sm text-on-surface">Tiêu chuẩn Rèn luyện</h3>
+                </div>
+                <div class="space-y-3 text-xs text-status-neutral">
+                    <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-50">
+                        <span>Xuất sắc:</span>
+                        <strong class="text-slate-800">90 - 100 điểm</strong>
+                    </div>
+                    <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-50">
+                        <span>Tốt:</span>
+                        <strong class="text-slate-800">80 - 89 điểm</strong>
+                    </div>
+                    <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-50">
+                        <span>Khá:</span>
+                        <strong class="text-slate-800">65 - 79 điểm</strong>
+                    </div>
+                    <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-50">
+                        <span>Trung bình:</span>
+                        <strong class="text-slate-800">50 - 64 điểm</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notice card -->
+            <div class="bg-primary-light/50 border border-primary/20 rounded-2xl p-5 space-y-2 text-xs">
+                <div class="flex items-center gap-2 text-primary font-bold">
+                    <span class="material-symbols-outlined text-[18px]">info</span>
+                    <span>Quy tắc đăng ký (BR01 - BR03)</span>
+                </div>
+                <p class="text-slate-600 leading-relaxed">
+                    Sinh viên chỉ được đăng ký hoạt động trong thời hạn mở đăng ký và khi còn chỗ. Việc hủy đăng ký phải thực hiện trước thời điểm đóng đăng ký.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

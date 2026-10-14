@@ -1,0 +1,151 @@
+@model List<EMS_MVC.ViewModels.Student.StudentActivityItemViewModel>
+@{
+    ViewData["Title"] = "Lịch sử tham gia hoạt động (UC-011)";
+    Layout = "_Layout";
+}
+
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-extrabold text-on-surface tracking-tight">Lịch sử tham gia hoạt động</h1>
+            <p class="text-xs text-status-neutral mt-1">Ghi nhận toàn bộ quá trình tham dự các hoạt động ngoại khóa và kết quả điểm danh của bạn</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <a asp-action="PointHistory" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-primary text-xs font-bold transition-colors">
+                <span class="material-symbols-outlined text-[16px]">military_tech</span>
+                <span>Lịch sử tích lũy điểm</span>
+            </a>
+            <a asp-controller="Activities" asp-action="Index" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold transition-colors shadow-sm">
+                <span class="material-symbols-outlined text-[16px]">search</span>
+                <span>Tra cứu sự kiện mới</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+        <div class="bg-surface rounded-2xl p-4 border border-border-subtle shadow-sm flex items-center justify-between">
+            <div>
+                <span class="text-status-neutral font-bold uppercase text-[10px] tracking-wider block">Tổng hoạt động đăng ký</span>
+                <span class="text-2xl font-black text-on-surface mt-1 block">@Model.Count</span>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
+                <span class="material-symbols-outlined text-[22px]">assignment</span>
+            </div>
+        </div>
+
+        <div class="bg-surface rounded-2xl p-4 border border-border-subtle shadow-sm flex items-center justify-between">
+            <div>
+                <span class="text-status-neutral font-bold uppercase text-[10px] tracking-wider block">Đã tham gia & Điểm danh</span>
+                <span class="text-2xl font-black text-status-success mt-1 block">@Model.Count(r => r.RegistrationStatus == "ATTENDED")</span>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-status-success-bg text-status-success flex items-center justify-center">
+                <span class="material-symbols-outlined text-[22px]">verified</span>
+            </div>
+        </div>
+
+        <div class="bg-surface rounded-2xl p-4 border border-border-subtle shadow-sm flex items-center justify-between">
+            <div>
+                <span class="text-status-neutral font-bold uppercase text-[10px] tracking-wider block">Tỷ lệ hoàn thành</span>
+                <span class="text-2xl font-black text-primary mt-1 block">
+                    @(Model.Any() ? Math.Round((double)Model.Count(r => r.RegistrationStatus == "ATTENDED") / Model.Count * 100, 1) : 0)%
+                </span>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-primary-light text-primary flex items-center justify-center">
+                <span class="material-symbols-outlined text-[22px]">donut_large</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table of Participation Records -->
+    <div class="bg-surface rounded-2xl shadow-sm border border-border-subtle overflow-hidden">
+        @if (Model.Any())
+        {
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 border-b border-border-subtle text-[11px] font-bold uppercase tracking-wider text-status-neutral">
+                        <tr>
+                            <th class="py-3.5 px-5">Tên hoạt động</th>
+                            <th class="py-3.5 px-4">Loại hoạt động</th>
+                            <th class="py-3.5 px-4">Thời gian tổ chức</th>
+                            <th class="py-3.5 px-4">Địa điểm</th>
+                            <th class="py-3.5 px-4">Điểm rèn luyện</th>
+                            <th class="py-3.5 px-4">Kết quả tham dự</th>
+                            <th class="py-3.5 px-5 text-right">Chi tiết</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border-subtle text-slate-700">
+                        @foreach (var item in Model)
+                        {
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="py-4 px-5">
+                                    <div class="font-bold text-on-surface text-sm">@item.Name</div>
+                                    @if (!string.IsNullOrEmpty(item.ActivityCode))
+                                    {
+                                        <div class="text-[11px] text-slate-400 font-mono">#@item.ActivityCode</div>
+                                    }
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                                        @item.ActivityTypeName
+                                    </span>
+                                </td>
+                                <td class="py-4 px-4 whitespace-nowrap">
+                                    <div class="font-medium text-slate-800">@item.StartAt.ToString("dd/MM/yyyy HH:mm")</div>
+                                    <div class="text-[11px] text-slate-400">đến @item.EndAt.ToString("HH:mm")</div>
+                                </td>
+                                <td class="py-4 px-4 text-slate-600 max-w-xs truncate">@item.Location</td>
+                                <td class="py-4 px-4 whitespace-nowrap">
+                                    <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-primary">
+                                        +@item.Points ĐRL
+                                    </span>
+                                </td>
+                                <td class="py-4 px-4 whitespace-nowrap">
+                                    @if (item.RegistrationStatus == "ATTENDED")
+                                    {
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                                            <span class="material-symbols-outlined text-[14px]">check_circle</span> Đã tham gia (Đã điểm danh)
+                                        </span>
+                                    }
+                                    else if (item.RegistrationStatus == "REGISTERED")
+                                    {
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-primary">
+                                            <span class="material-symbols-outlined text-[14px]">schedule</span> Đã đăng ký (Chờ diễn ra)
+                                        </span>
+                                    }
+                                    else if (item.RegistrationStatus == "CANCELLED")
+                                    {
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-500">
+                                            <span class="material-symbols-outlined text-[14px]">cancel</span> Đã hủy giữ chỗ
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700">@item.RegistrationStatus</span>
+                                    }
+                                </td>
+                                <td class="py-4 px-5 text-right whitespace-nowrap">
+                                    <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.ActivityId" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 transition-colors">
+                                        Xem
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-16">
+                <span class="material-symbols-outlined text-5xl text-slate-300">history_edu</span>
+                <p class="text-sm font-bold text-slate-700 mt-3">Chưa có dữ liệu lịch sử tham gia</p>
+                <p class="text-xs text-status-neutral mt-1">Hãy đăng ký tham gia các hoạt động ngoại khóa để được ghi nhận vào lịch sử rèn luyện.</p>
+                <a asp-controller="Activities" asp-action="Index" class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-sm">
+                    <span class="material-symbols-outlined text-[16px]">search</span>
+                    <span>Khám phá hoạt động</span>
+                </a>
+            </div>
+        }
+    </div>
+</div>

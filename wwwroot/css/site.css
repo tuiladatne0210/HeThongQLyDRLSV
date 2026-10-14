@@ -1,0 +1,432 @@
+/* ==========================================================================
+   EMS-MVC Stitch Design System & Master Theme Stylesheet
+   Architecture: ASP.NET Core MVC + Bootstrap 5 + Stitch Tokens
+   Lead Designer & UI Specialist: Lê Thành Đạt
+   ========================================================================== */
+
+:root {
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Core Brand Colors (Stitch Design System) */
+  --color-primary: #00288e;
+  --color-primary-container: #1e40af;
+  --color-primary-light: #EFF6FF;
+  --color-primary-fixed: #dde1ff;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #a8b8ff;
+  
+  --color-secondary: #515f74;
+  --color-secondary-container: #d5e3fc;
+  --color-on-secondary: #ffffff;
+  
+  --color-background: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-surface-bright: #f8f9ff;
+  --color-surface-container: #e5eeff;
+  --color-surface-container-low: #eff4ff;
+  --color-surface-container-high: #dce9ff;
+  
+  --color-on-surface: #0b1c30;
+  --color-on-surface-variant: #444653;
+  --color-border: #E2E8F0;
+  
+  /* Semantic Status Colors */
+  --status-success: #059669;
+  --status-success-bg: #ECFDF5;
+  --status-warning: #D97706;
+  --status-warning-bg: #FFFBEB;
+  --status-danger: #DC2626;
+  --status-danger-bg: #FEF2F2;
+  --status-info: #0284C7;
+  --status-info-bg: #F0F9FF;
+  --status-neutral: #64748B;
+  --status-neutral-bg: #F1F5F9;
+
+  /* Geometry */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-full: 9999px;
+  
+  --sidebar-width: 260px;
+  --header-height: 64px;
+}
+
+/* Base resets & typography */
+html, body {
+  font-family: var(--font-family);
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* Material Symbols alignment */
+.material-symbols-outlined {
+  vertical-align: middle;
+  font-size: 1.25rem;
+  line-height: 1;
+  display: inline-block;
+  user-select: none;
+}
+
+/* ==========================================================================
+   PORTAL LAYOUT (AUTHENTICATED SIDEBAR & HEADER)
+   ========================================================================== */
+.portal-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  background-color: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  z-index: 1040;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.portal-brand {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+}
+
+.portal-nav {
+  flex: 1;
+  padding: 0.75rem 0.75rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.portal-nav-title {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-secondary);
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0.75rem 0.25rem;
+}
+
+.portal-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #475569;
+  transition: all 0.15s ease-in-out;
+}
+
+.portal-nav-link:hover {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.portal-nav-link.active {
+  background-color: var(--color-primary);
+  color: #FFFFFF !important;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 40, 142, 0.2);
+}
+
+.portal-nav-link.active .material-symbols-outlined {
+  color: #FFFFFF !important;
+}
+
+.portal-header {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width);
+  right: 0;
+  height: var(--header-height);
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-border);
+  z-index: 1030;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.portal-main {
+  margin-left: var(--sidebar-width);
+  padding: calc(var(--header-height) + 1.5rem) 1.5rem 3rem 1.5rem;
+  min-height: 100vh;
+  background-color: var(--color-background);
+}
+
+.portal-content-container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* ==========================================================================
+   PUBLIC LANDING & GENERAL NAVIGATION HEADER
+   ========================================================================== */
+.public-header {
+  position: sticky;
+  top: 0;
+  background-color: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1030;
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.public-header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  height: var(--header-height);
+  padding: 0 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.public-main {
+  min-height: calc(100vh - var(--header-height) - 80px);
+  background-color: var(--color-background);
+}
+
+.public-footer {
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  padding: 2rem 1.25rem;
+  color: var(--color-secondary);
+  font-size: 0.875rem;
+}
+
+/* ==========================================================================
+   STANDALONE UTILITY CLASSES (STITCH TOKENS & RESPONSIVE FALLBACKS)
+   ========================================================================== */
+.bg-primary { background-color: var(--color-primary) !important; }
+.bg-primary-container { background-color: var(--color-primary-container) !important; }
+.bg-primary-light { background-color: var(--color-primary-light) !important; }
+.text-primary { color: var(--color-primary) !important; }
+.text-on-primary { color: var(--color-on-primary) !important; }
+
+.bg-surface { background-color: var(--color-surface) !important; }
+.text-on-surface { color: var(--color-on-surface) !important; }
+.bg-background { background-color: var(--color-background) !important; }
+.border-border-subtle { border-color: var(--color-border) !important; }
+
+.bg-status-success-bg { background-color: var(--status-success-bg) !important; }
+.text-status-success { color: var(--status-success) !important; }
+
+.bg-status-warning-bg { background-color: var(--status-warning-bg) !important; }
+.text-status-warning { color: var(--status-warning) !important; }
+
+.bg-status-danger-bg { background-color: var(--status-danger-bg) !important; }
+.text-status-danger { color: var(--status-danger) !important; }
+
+.bg-status-info-bg { background-color: var(--status-info-bg) !important; }
+.text-status-info { color: var(--status-info) !important; }
+
+.bg-status-neutral-bg { background-color: var(--status-neutral-bg) !important; }
+.text-status-neutral { color: var(--status-neutral) !important; }
+
+.rounded-xl { border-radius: var(--radius-lg) !important; }
+.rounded-2xl { border-radius: var(--radius-xl) !important; }
+.rounded-full { border-radius: var(--radius-full) !important; }
+
+.shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important; }
+.shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05) !important; }
+.shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.08) !important; }
+.shadow-xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.08) !important; }
+
+/* Stitch Cards */
+.card-custom {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.card-custom:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+/* Custom Buttons */
+.btn-primary-custom {
+  background-color: var(--color-primary);
+  color: #FFFFFF !important;
+  border: none;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  padding: 0.55rem 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.15s ease-in-out;
+  text-decoration: none;
+}
+
+.btn-primary-custom:hover {
+  background-color: var(--color-primary-container);
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 10px rgba(0, 40, 142, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-primary-custom:active {
+  transform: translateY(0);
+}
+
+/* Status Badges */
+.badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.badge-open {
+  background-color: var(--status-success-bg);
+  color: var(--status-success);
+  border: 1px solid rgba(5, 150, 105, 0.2);
+}
+
+.badge-pending {
+  background-color: var(--status-warning-bg);
+  color: var(--status-warning);
+  border: 1px solid rgba(217, 119, 6, 0.2);
+}
+
+.badge-draft {
+  background-color: #F1F5F9;
+  color: #475569;
+  border: 1px solid #CBD5E1;
+}
+
+.badge-rejected, .badge-danger {
+  background-color: var(--status-danger-bg);
+  color: var(--status-danger);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.badge-info {
+  background-color: var(--status-info-bg);
+  color: var(--status-info);
+  border: 1px solid rgba(2, 132, 199, 0.2);
+}
+
+/* Hero Gradient */
+.hero-gradient {
+  background: linear-gradient(135deg, #00288e 0%, #0a36a8 50%, #1e40af 100%);
+}
+
+/* Form Controls Enhancements */
+.form-control, .form-select {
+  border-color: var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  padding: 0.55rem 0.85rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(0, 40, 142, 0.15);
+  outline: none;
+}
+
+/* Table Enhancements */
+.table-custom {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table-custom th {
+  background-color: #F8FAFC;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-secondary);
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table-custom td {
+  padding: 0.875rem 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.875rem;
+}
+
+.table-custom tbody tr:hover {
+  background-color: rgba(239, 246, 255, 0.5);
+}
+
+/* Flash alerts */
+.flash-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.25rem;
+  border-radius: var(--radius-lg);
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+.flash-alert-success {
+  background-color: var(--status-success-bg);
+  border: 1px solid rgba(5, 150, 105, 0.25);
+  color: var(--status-success);
+}
+
+.flash-alert-danger {
+  background-color: var(--status-danger-bg);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  color: var(--status-danger);
+}
+
+/* Responsive mobile adjustments */
+@media (max-width: 991.98px) {
+  .portal-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.25s ease-in-out;
+  }
+  
+  .portal-sidebar.show {
+    transform: translateX(0);
+  }
+  
+  .portal-header {
+    left: 0;
+  }
+  
+  .portal-main {
+    margin-left: 0;
+    padding: calc(var(--header-height) + 1rem) 1rem 2rem 1rem;
+  }
+}

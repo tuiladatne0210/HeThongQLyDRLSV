@@ -1,0 +1,126 @@
+@model List<EMS_MVC.ViewModels.Student.PointHistoryItemViewModel>
+@{
+    ViewData["Title"] = "Lịch sử tích lũy điểm rèn luyện (UC-012)";
+    Layout = "_Layout";
+    var totalEarned = Model.Where(p => p.Points > 0).Sum(p => p.Points);
+}
+
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-extrabold text-on-surface tracking-tight">Lịch sử tích lũy điểm rèn luyện</h1>
+            <p class="text-xs text-status-neutral mt-1">Bảng kê chi tiết các khoản điểm rèn luyện đã được cộng từ các sự kiện ngoại khóa</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <a asp-action="ParticipationHistory" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors">
+                <span class="material-symbols-outlined text-[16px]">history</span>
+                <span>Lịch sử tham gia</span>
+            </a>
+            <a asp-action="Dashboard" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-white hover:bg-primary-container text-xs font-bold transition-colors shadow-sm">
+                <span class="material-symbols-outlined text-[16px]">dashboard</span>
+                <span>Về Dashboard</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Point Summary Highlights -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+        <div class="bg-surface rounded-2xl p-5 border border-border-subtle shadow-sm flex items-center justify-between">
+            <div>
+                <span class="text-status-neutral font-bold uppercase text-[10px] tracking-wider block">Tổng điểm đã tích lũy</span>
+                <div class="mt-1 flex items-baseline gap-1.5">
+                    <span class="text-3xl font-black text-primary">@totalEarned</span>
+                    <span class="text-xs text-status-neutral font-medium">điểm ĐRL</span>
+                </div>
+            </div>
+            <div class="w-11 h-11 rounded-2xl bg-primary-light text-primary flex items-center justify-center">
+                <span class="material-symbols-outlined text-[24px]">military_tech</span>
+            </div>
+        </div>
+
+        <div class="bg-surface rounded-2xl p-5 border border-border-subtle shadow-sm flex items-center justify-between">
+            <div>
+                <span class="text-status-neutral font-bold uppercase text-[10px] tracking-wider block">Số lượt ghi nhận điểm</span>
+                <span class="text-3xl font-black text-on-surface mt-1 block">@Model.Count</span>
+            </div>
+            <div class="w-11 h-11 rounded-2xl bg-status-success-bg text-status-success flex items-center justify-center">
+                <span class="material-symbols-outlined text-[24px]">add_task</span>
+            </div>
+        </div>
+
+        <div class="bg-surface rounded-2xl p-5 border border-border-subtle shadow-sm flex items-center justify-between">
+            <div>
+                <span class="text-status-neutral font-bold uppercase text-[10px] tracking-wider block">Tiến độ chuẩn tốt nghiệp</span>
+                <div class="mt-1 flex items-baseline gap-1.5">
+                    <span class="text-3xl font-black text-emerald-700">@(Math.Min(100, totalEarned))%</span>
+                    <span class="text-xs text-status-neutral font-medium">/ 100 điểm</span>
+                </div>
+            </div>
+            <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+                <span class="material-symbols-outlined text-[24px]">verified</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Point Ledger Table -->
+    <div class="bg-surface rounded-2xl shadow-sm border border-border-subtle overflow-hidden">
+        @if (Model.Any())
+        {
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 border-b border-border-subtle text-[11px] font-bold uppercase tracking-wider text-status-neutral">
+                        <tr>
+                            <th class="py-3.5 px-5">Tên sự kiện / Hoạt động</th>
+                            <th class="py-3.5 px-4">Loại hoạt động</th>
+                            <th class="py-3.5 px-4">Lý do ghi nhận</th>
+                            <th class="py-3.5 px-4">Thời gian ghi nhận</th>
+                            <th class="py-3.5 px-5 text-right">Điểm cộng (+)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border-subtle text-slate-700">
+                        @foreach (var p in Model)
+                        {
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="py-4 px-5">
+                                    <span class="font-bold text-on-surface text-sm block">@p.ActivityName</span>
+                                    <span class="text-[11px] text-slate-400 font-mono">Giao dịch #@p.TransactionId</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                                        @p.ActivityTypeName
+                                    </span>
+                                </td>
+                                <td class="py-4 px-4 text-slate-600">
+                                    <span class="inline-flex items-center gap-1 text-slate-700 font-medium">
+                                        <span class="material-symbols-outlined text-[15px] text-status-success">check_circle</span>
+                                        @(p.Reason ?? "Hoàn thành tham dự và điểm danh hợp lệ")
+                                    </span>
+                                </td>
+                                <td class="py-4 px-4 text-slate-500 whitespace-nowrap">
+                                    @p.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                                </td>
+                                <td class="py-4 px-5 text-right whitespace-nowrap">
+                                    <span class="inline-flex items-center gap-0.5 px-3 py-1 rounded-full text-xs font-extrabold bg-blue-100 text-primary">
+                                        +@p.Points ĐRL
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-16">
+                <span class="material-symbols-outlined text-5xl text-slate-300">account_balance_wallet</span>
+                <p class="text-sm font-bold text-slate-700 mt-3">Chưa có giao dịch tích lũy điểm rèn luyện nào</p>
+                <p class="text-xs text-status-neutral mt-1">Điểm rèn luyện sẽ tự động được cộng vào sổ cái khi bạn tham gia và được điểm danh tại sự kiện.</p>
+                <a asp-controller="Activities" asp-action="Index" class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-sm">
+                    <span class="material-symbols-outlined text-[16px]">search</span>
+                    <span>Đăng ký hoạt động ngay</span>
+                </a>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,133 @@
+@model EMS_MVC.ViewModels.Admin.ActivateUserViewModel
+@{
+    ViewData["Title"] = "Kích hoạt & Phân quyền - " + Model.Username;
+    Layout = "_Layout";
+}
+
+<div class="mb-3">
+    <a asp-action="Users" class="text-secondary text-decoration-none small d-inline-flex align-items-center gap-1">
+        <span class="material-symbols-outlined fs-6">arrow_back</span> Quay lại danh sách người dùng
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card card-custom p-4 shadow-sm">
+            <h4 class="fw-bold text-dark mb-1">KÍCH HOẠT & PHÂN QUYỀN TÀI KHOẢN</h4>
+            <p class="text-secondary small mb-4">Cập nhật trạng thái kích hoạt và gán các vai trò hệ thống cho người dùng</p>
+
+            <!-- Thông tin người dùng -->
+            <div class="p-3 bg-light rounded-3 mb-4">
+                <div class="row g-2 small">
+                    <div class="col-sm-6">
+                        <span class="text-muted d-block" style="font-size: 0.72rem;">HỌ VÀ TÊN</span>
+                        <strong class="text-dark fs-6">@Model.FullName</strong>
+                    </div>
+                    <div class="col-sm-6">
+                        <span class="text-muted d-block" style="font-size: 0.72rem;">TÊN ĐĂNG NHẬP</span>
+                        <strong class="text-dark fs-6"><code>@Model.Username</code></strong>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.StudentCode))
+                    {
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block" style="font-size: 0.72rem;">MÃ SINH VIÊN (MSSV)</span>
+                            <span class="fw-bold text-primary">@Model.StudentCode</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block" style="font-size: 0.72rem;">LỚP SINH HOẠT</span>
+                            <span class="fw-semibold">@Model.ClassName</span>
+                        </div>
+                    }
+                    <div class="col-sm-6">
+                        <span class="text-muted d-block" style="font-size: 0.72rem;">EMAIL</span>
+                        <span>@(Model.Email ?? "—")</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <span class="text-muted d-block" style="font-size: 0.72rem;">TRẠNG THÁI HIỆN TẠI</span>
+                        @if (Model.CurrentStatus == "PENDING_APPROVAL")
+                        {
+                            <span class="badge badge-pending">CHỜ KÍCH HOẠT</span>
+                        }
+                        else if (Model.CurrentStatus == "ACTIVE")
+                        {
+                            <span class="badge badge-open">ACTIVE</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">@Model.CurrentStatus</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form cập nhật -->
+            <form asp-action="Activate" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="UserId" />
+                <input type="hidden" asp-for="Username" />
+                <input type="hidden" asp-for="FullName" />
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger small py-2 px-3 mb-3"></div>
+
+                <!-- 1. Trạng thái mới -->
+                <div class="mb-4">
+                    <label class="form-label small fw-bold text-dark">Quyết định trạng thái tài khoản</label>
+                    <div class="d-flex flex-wrap gap-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="NewStatus" value="ACTIVE" id="statusActive" />
+                            <label class="form-check-label small fw-semibold text-success" for="statusActive">
+                                Kích hoạt tài khoản (ACTIVE)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="NewStatus" value="REJECTED" id="statusRejected" />
+                            <label class="form-check-label small fw-semibold text-danger" for="statusRejected">
+                                Từ chối tài khoản (REJECTED)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="NewStatus" value="DISABLED" id="statusDisabled" />
+                            <label class="form-check-label small fw-semibold text-secondary" for="statusDisabled">
+                                Tạm khóa (DISABLED)
+                            </label>
+                        </div>
+                    </div>
+                    <span asp-validation-for="NewStatus" class="text-danger small"></span>
+                </div>
+
+                <!-- 2. Danh sách vai trò (Multi-role support) -->
+                <div class="mb-4">
+                    <label class="form-label small fw-bold text-dark d-block">Gán vai trò hệ thống (Roles)</label>
+                    <small class="text-muted d-block mb-2">Một người dùng có thể sở hữu đồng thời nhiều vai trò. Quyền hiệu lực là hợp các vai trò được chọn.</small>
+
+                    <div class="row g-2 p-3 bg-light rounded-3">
+                        @foreach (var role in Model.AvailableRoles)
+                        {
+                            var isChecked = Model.SelectedRoles.Contains(role);
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="SelectedRoles" value="@role" id="role_@role" @(isChecked ? "checked" : "") />
+                                    <label class="form-check-label small fw-semibold text-dark" for="role_@role">
+                                        @role
+                                        @if (role == "Student") { <small class="text-muted d-block">Sinh viên tham gia</small> }
+                                        else if (role == "Organizer") { <small class="text-muted d-block">Ban tổ chức hoạt động</small> }
+                                        else if (role == "Manager") { <small class="text-muted d-block">Cán bộ quản lý phê duyệt</small> }
+                                        else if (role == "Admin") { <small class="text-muted d-block">Quản trị toàn hệ thống</small> }
+                                    </label>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="pt-3 border-top d-flex justify-content-end gap-2">
+                    <a asp-action="Users" class="btn btn-outline-secondary">Hủy bỏ</a>
+                    <button type="submit" class="btn btn-primary-custom">
+                        <span class="material-symbols-outlined">how_to_reg</span>
+                        <span>LƯU CẬP NHẬT</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

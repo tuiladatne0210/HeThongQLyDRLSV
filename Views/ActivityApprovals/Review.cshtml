@@ -1,0 +1,105 @@
+@model EMS_MVC.ViewModels.Activity.ActivityDetailViewModel
+@{
+    ViewData["Title"] = "Thẩm định hoạt động - " + Model.Name;
+    Layout = "_Layout";
+}
+
+<div class="mb-3">
+    <a asp-action="Index" class="text-secondary text-decoration-none small d-inline-flex align-items-center gap-1">
+        <span class="material-symbols-outlined fs-6">arrow_back</span> Quay lại hàng đợi phê duyệt
+    </a>
+</div>
+
+<div class="row g-4">
+    <!-- Cột trái: Thông tin chi tiết đề xuất hoạt động -->
+    <div class="col-lg-8">
+        <div class="card card-custom p-4 shadow-sm mb-4">
+            <div class="d-flex justify-content-between align-items-start gap-3 mb-2">
+                <div>
+                    <span class="badge bg-primary-subtle text-primary mb-2">@Model.ActivityTypeName</span>
+                    <h3 class="fw-bold text-dark mb-1">@Model.Name</h3>
+                    @if (!string.IsNullOrEmpty(Model.ActivityCode))
+                    {
+                        <span class="text-muted small">Mã sự kiện: <code>@Model.ActivityCode</code></span>
+                    }
+                </div>
+                <span class="badge badge-open fs-6 px-3 py-2 fw-bold">+@Model.Points ĐRL</span>
+            </div>
+
+            <div class="small text-muted mb-3">
+                <span>Người phụ trách (BTC): <strong>@Model.OrganizerName</strong></span>
+                <span class="mx-2">•</span>
+                <span>Học kỳ: <strong>@Model.SemesterName</strong></span>
+            </div>
+
+            <hr class="my-3 text-muted" />
+
+            <div class="mb-4">
+                <h6 class="fw-bold text-dark mb-2">Mục tiêu & Nội dung chi tiết</h6>
+                <div class="text-secondary small" style="white-space: pre-line; line-height: 1.6;">
+                    @(Model.Description ?? "Chưa có mô tả chi tiết.")
+                </div>
+            </div>
+
+            <div class="row g-3 p-3 bg-light rounded-3">
+                <div class="col-md-6 small">
+                    <span class="text-muted d-block" style="font-size: 0.72rem;">THỜI GIAN HOẠT ĐỘNG</span>
+                    <strong>@Model.StartAt.ToString("dd/MM/yyyy HH:mm") - @Model.EndAt.ToString("HH:mm")</strong>
+                </div>
+                <div class="col-md-6 small">
+                    <span class="text-muted d-block" style="font-size: 0.72rem;">ĐỊA ĐIỂM</span>
+                    <strong>@Model.Location</strong>
+                </div>
+                <div class="col-md-6 small">
+                    <span class="text-muted d-block" style="font-size: 0.72rem;">KHUNG THỜI GIAN ĐĂNG KÝ</span>
+                    <strong>@Model.RegistrationStartAt.ToString("dd/MM/yyyy") - @Model.RegistrationEndAt.ToString("dd/MM/yyyy HH:mm")</strong>
+                </div>
+                <div class="col-md-6 small">
+                    <span class="text-muted d-block" style="font-size: 0.72rem;">SỐ LƯỢNG TỐI ĐA</span>
+                    <strong>@(Model.MaxParticipants?.ToString() ?? "Không giới hạn") sinh viên</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cột phải: Khối Quyết định thẩm định của Manager -->
+    <div class="col-lg-4">
+        <div class="card card-custom p-4 shadow-sm mb-4">
+            <h5 class="fw-bold text-dark mb-3">Quyết định thẩm định</h5>
+
+            @if (Model.Status == "PENDING_APPROVAL")
+            {
+                <form asp-action="Decision" method="post" id="approvalForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="ActivityId" value="@Model.ActivityId" />
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Ý kiến nhận xét / Lý do từ chối</label>
+                        <textarea name="ReviewNote" class="form-control" rows="4" placeholder="Nhập căn cứ phê duyệt hoặc lý do yêu cầu Ban tổ chức chỉnh sửa..."></textarea>
+                        <small class="text-muted" style="font-size: 0.75rem;">* Bắt buộc phải có lý do nếu chọn Từ chối.</small>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <!-- Nút Phê duyệt -->
+                        <button type="submit" name="Action" value="APPROVE" class="btn btn-success fw-semibold py-2 d-flex align-items-center justify-content-center gap-1 text-white">
+                            <span class="material-symbols-outlined fs-6">check_circle</span>
+                            <span>PHÊ DUYỆT HOẠT ĐỘNG</span>
+                        </button>
+
+                        <!-- Nút Từ chối -->
+                        <button type="submit" name="Action" value="REJECT" class="btn btn-outline-danger fw-semibold py-2 d-flex align-items-center justify-content-center gap-1" onclick="return confirm('Bạn có chắc chắn muốn từ chối đề xuất này? Vui lòng đảm bảo đã nhập lý do.');">
+                            <span class="material-symbols-outlined fs-6">cancel</span>
+                            <span>TỪ CHỐI ĐỀ XUẤT</span>
+                        </button>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <div class="alert alert-info small mb-0">
+                    Hoạt động này hiện ở trạng thái <strong>@Model.Status</strong> và đã được xử lý thẩm định trước đó.
+                </div>
+            }
+        </div>
+    </div>
+</div>

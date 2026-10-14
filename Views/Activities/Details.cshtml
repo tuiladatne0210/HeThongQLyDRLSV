@@ -1,0 +1,191 @@
+@model EMS_MVC.ViewModels.Activity.ActivityDetailViewModel
+@{
+    ViewData["Title"] = Model.Name;
+    Layout = "_Layout";
+}
+
+<div class="space-y-6">
+    <!-- Breadcrumb & Back Link -->
+    <div class="flex items-center gap-2 text-xs">
+        <a asp-action="Index" class="inline-flex items-center gap-1 text-slate-500 hover:text-primary transition-colors font-medium">
+            <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+            <span>Quay lại danh mục hoạt động</span>
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Left: Main Detail Information (8 Cols) -->
+        <div class="lg:col-span-8 space-y-6">
+            <div class="bg-surface rounded-2xl p-6 sm:p-8 shadow-sm border border-border-subtle space-y-6">
+                <!-- Header Title & Badges -->
+                <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-6 border-b border-border-subtle">
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary-light text-primary">
+                                @Model.ActivityTypeName
+                            </span>
+                            @if (!string.IsNullOrEmpty(Model.ActivityCode))
+                            {
+                                <span class="text-xs text-status-neutral font-mono">#@Model.ActivityCode</span>
+                            }
+                        </div>
+                        <h1 class="text-2xl sm:text-3xl font-extrabold text-on-surface tracking-tight">@Model.Name</h1>
+                        <p class="text-xs text-status-neutral flex items-center gap-2">
+                            <span>Đơn vị tổ chức:</span>
+                            <strong class="text-slate-800">@(Model.OrganizerName ?? "Ban Chấp hành Đoàn trường")</strong>
+                        </p>
+                    </div>
+
+                    <div class="sm:text-right shrink-0">
+                        <span class="inline-flex items-center gap-1 px-4 py-2 rounded-xl text-base font-extrabold bg-blue-100 text-primary">
+                            <span class="material-symbols-outlined text-[20px]">military_tech</span>
+                            <span>+@Model.Points ĐRL</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Description Block -->
+                <div class="space-y-2">
+                    <h3 class="font-bold text-sm uppercase tracking-wider text-slate-700">Mô tả hoạt động</h3>
+                    <div class="text-sm text-slate-600 leading-relaxed whitespace-pre-line bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        @(Model.Description ?? "Chưa có mô tả chi tiết cho hoạt động này.")
+                    </div>
+                </div>
+
+                <!-- Venue & Time Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-blue-100 text-primary flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-[22px]">calendar_month</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] font-bold uppercase text-slate-400 block">Thời gian diễn ra</span>
+                            <span class="text-xs font-bold text-slate-800">@Model.StartAt.ToString("dd/MM/yyyy HH:mm")</span>
+                            <span class="text-xs text-slate-500"> - @Model.EndAt.ToString("HH:mm")</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-[22px]">location_on</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] font-bold uppercase text-slate-400 block">Địa điểm tổ chức</span>
+                            <span class="text-xs font-bold text-slate-800">@Model.Location</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Registration Window Notice -->
+                <div class="flex items-center gap-3 p-4 rounded-xl bg-amber-50/70 border border-amber-200 text-xs text-amber-800">
+                    <span class="material-symbols-outlined text-amber-600 text-[22px] shrink-0">schedule</span>
+                    <div>
+                        <strong class="font-bold">Thời hạn đăng ký:</strong> Từ @Model.RegistrationStartAt.ToString("dd/MM/yyyy HH:mm") đến @Model.RegistrationEndAt.ToString("dd/MM/yyyy HH:mm")
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Action & Registration Card (4 Cols) -->
+        <div class="lg:col-span-4 space-y-6">
+            <div class="bg-surface rounded-2xl p-6 shadow-sm border border-border-subtle space-y-5">
+                <div class="flex items-center justify-between pb-3 border-b border-border-subtle">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-700">Trạng thái đăng ký</span>
+                    <span class="px-2.5 py-0.5 rounded-full text-xs font-bold @(Model.Status == "OPEN" ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600")">
+                        @(Model.Status == "OPEN" ? "ĐANG MỞ" : Model.Status)
+                    </span>
+                </div>
+
+                <!-- Capacity Counter -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-500">Số lượng đã đăng ký:</span>
+                        <strong class="text-slate-800 font-bold">@Model.CurrentParticipantsCount / @(Model.MaxParticipants?.ToString() ?? "Không giới hạn")</strong>
+                    </div>
+                    @{
+                        var max = Model.MaxParticipants ?? 100;
+                        var current = Model.CurrentParticipantsCount;
+                        var pct = max > 0 ? (current * 100 / max) : 0;
+                    }
+                    <div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                        <div class="h-full bg-primary rounded-full transition-all" style="width: @(Math.Min(100, pct))%;"></div>
+                    </div>
+                    @if (Model.MaxParticipants.HasValue)
+                    {
+                        <div class="text-[11px] text-slate-400 text-right">
+                            Còn lại: @(Math.Max(0, Model.MaxParticipants.Value - current)) chỗ trống
+                        </div>
+                    }
+                </div>
+
+                <!-- Registration Action Buttons -->
+                <div class="pt-2 space-y-3">
+                    @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Student"))
+                    {
+                        if (Model.IsRegistered)
+                        {
+                            <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[20px] text-emerald-600">check_circle</span>
+                                <span>Bạn đã đăng ký thành công hoạt động này!</span>
+                            </div>
+
+                            if (Model.CanCancel)
+                            {
+                                <form asp-controller="Student" asp-action="CancelRegistration" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="activityId" value="@Model.ActivityId" />
+                                    <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs transition-colors border border-rose-200" onclick="return confirm('Bạn có chắc chắn muốn hủy đăng ký hoạt động này?')">
+                                        Hủy đăng ký giữ chỗ
+                                    </button>
+                                </form>
+                            }
+                        }
+                        else
+                        {
+                            if (Model.CanRegister)
+                            {
+                                <form asp-controller="Student" asp-action="RegisterActivity" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="activityId" value="@Model.ActivityId" />
+                                    <button type="submit" class="w-full py-3 px-4 rounded-xl bg-primary hover:bg-primary-container text-white font-bold text-sm shadow-md transition-all active:scale-95 flex items-center justify-center gap-2">
+                                        <span class="material-symbols-outlined text-[20px]">how_to_reg</span>
+                                        <span>ĐĂNG KÝ THAM GIA</span>
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <div class="p-3 rounded-xl bg-slate-100 text-slate-500 text-xs text-center font-medium">
+                                    @(Model.CannotRegisterReason ?? "Hoạt động hiện không thể đăng ký.")
+                                </div>
+                            }
+                        }
+                    }
+                    else if (User.Identity?.IsAuthenticated != true)
+                    {
+                        <div class="space-y-2">
+                            <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path" class="w-full py-3 px-4 rounded-xl bg-primary hover:bg-primary-container text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-[18px]">login</span>
+                                <span>Đăng nhập sinh viên để đăng ký</span>
+                            </a>
+                            <p class="text-[11px] text-slate-400 text-center">Chưa có tài khoản? <a asp-controller="Account" asp-action="Register" class="text-primary hover:underline">Đăng ký tại đây</a></p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 text-slate-500 text-xs text-center">
+                            Đang đăng nhập với vai trò cán bộ/quản trị. Chỉ tài khoản Sinh viên mới có thể đăng ký giữ chỗ.
+                        </div>
+                    }
+                </div>
+
+                <!-- Rules notice -->
+                <div class="pt-3 border-t border-slate-100 text-[11px] text-slate-400 space-y-1">
+                    <p>• BR01: Chỉ đăng ký khi trạng thái OPEN và trong thời hạn.</p>
+                    <p>• BR02: Tự động khóa khi đạt số lượng tối đa.</p>
+                    <p>• BR03: Không đăng ký trùng lặp trong cùng sự kiện.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

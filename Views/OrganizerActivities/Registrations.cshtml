@@ -1,0 +1,81 @@
+@model List<EMS_MVC.ViewModels.Attendance.StudentRegistrationAttendanceItemViewModel>
+@{
+    ViewData["Title"] = "Danh sách đăng ký - " + ViewBag.ActivityName;
+    Layout = "_Layout";
+}
+
+<div class="mb-3">
+    <a asp-action="Details" asp-route-id="@ViewBag.ActivityId" class="text-secondary text-decoration-none small d-inline-flex align-items-center gap-1">
+        <span class="material-symbols-outlined fs-6">arrow_back</span> Quay lại quản trị hoạt động
+    </a>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="fw-bold text-dark mb-1">DANH SÁCH SINH VIÊN ĐĂNG KÝ</h4>
+        <p class="text-secondary small mb-0">Hoạt động: <strong>@ViewBag.ActivityName</strong> (Tổng số: @Model.Count sinh viên)</p>
+    </div>
+    <a asp-controller="Attendance" asp-action="Sessions" asp-route-activityId="@ViewBag.ActivityId" class="btn btn-primary-custom">
+        <span class="material-symbols-outlined">fact_check</span>
+        <span>Mở phiên điểm danh</span>
+    </a>
+</div>
+
+<div class="card card-custom p-0 overflow-hidden shadow-sm">
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">STT</th>
+                        <th>MSSV</th>
+                        <th>Họ và tên</th>
+                        <th>Lớp</th>
+                        <th>Khoa</th>
+                        <th>Trạng thái đăng ký</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int stt = 1; }
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-4 fw-semibold text-muted">@(stt++)</td>
+                            <td><strong class="text-dark">@item.StudentCode</strong></td>
+                            <td><span class="fw-semibold">@item.FullName</span></td>
+                            <td><span class="badge bg-light text-dark border">@item.ClassName</span></td>
+                            <td class="small text-secondary">@item.DepartmentName</td>
+                            <td>
+                                @if (item.RegistrationStatus == "ATTENDED")
+                                {
+                                    <span class="badge badge-open">Đã tham gia (ATTENDED)</span>
+                                }
+                                else if (item.RegistrationStatus == "REGISTERED")
+                                {
+                                    <span class="badge badge-info">Đã đăng ký (REGISTERED)</span>
+                                }
+                                else if (item.RegistrationStatus == "CANCELLED")
+                                {
+                                    <span class="badge badge-danger">Đã hủy (CANCELLED)</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@item.RegistrationStatus</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5 text-muted">
+            <span class="material-symbols-outlined fs-1 text-secondary mb-2">group_off</span>
+            <h5>Chưa có sinh viên nào đăng ký hoạt động này</h5>
+            <p class="small mb-0">Danh sách sẽ tự động cập nhật khi sinh viên thực hiện đăng ký qua Cổng Sinh viên.</p>
+        </div>
+    }
+</div>

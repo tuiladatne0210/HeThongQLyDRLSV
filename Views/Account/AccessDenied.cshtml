@@ -1,0 +1,18 @@
+@{
+    ViewData["Title"] = "Từ chối truy cập (403)";
+    Layout = "_Layout";
+}
+
+<div class="container text-center py-5">
+    <div class="d-inline-flex p-3 rounded-circle bg-danger-subtle text-danger mb-3">
+        <span class="material-symbols-outlined fs-1">gpp_bad</span>
+    </div>
+    <h3 class="fw-bold text-dark">TỪ CHỐI TRUY CẬP (ACCESS DENIED)</h3>
+    <p class="text-secondary small mb-4">
+        Tài khoản hiện tại của bạn không có đủ thẩm quyền vai trò (Role) để truy cập chức năng này.
+    </p>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary-custom">
+        <span class="material-symbols-outlined">home</span>
+        <span>Về trang chủ của bạn</span>
+    </a>
+</div>

@@ -1,0 +1,131 @@
+@model EMS_MVC.ViewModels.Activity.ActivityCreateEditViewModel
+@{
+    ViewData["Title"] = "Tạo hoạt động mới";
+    Layout = "_Layout";
+}
+
+<div class="mb-3">
+    <a asp-action="Index" class="text-secondary text-decoration-none small d-inline-flex align-items-center gap-1">
+        <span class="material-symbols-outlined fs-6">arrow_back</span> Quay lại danh sách quản lý
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="card card-custom p-4 shadow-sm">
+            <h4 class="fw-bold text-dark mb-1">TẠO HOẠT ĐỘNG NGOẠI KHÓA MỚI</h4>
+            <p class="text-secondary small mb-4">Hoạt động khởi tạo ban đầu sẽ được lưu ở trạng thái Bản nháp (DRAFT)</p>
+
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger small py-2 px-3 mb-3"></div>
+
+                <div class="row g-3">
+                    <!-- Tên hoạt động -->
+                    <div class="col-md-8">
+                        <label asp-for="Name" class="form-label small fw-semibold text-secondary"></label>
+                        <input asp-for="Name" class="form-control" placeholder="Ví dụ: Hội thảo Chuyển đổi số trong Giáo dục ĐH" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Mã hoạt động -->
+                    <div class="col-md-4">
+                        <label asp-for="ActivityCode" class="form-label small fw-semibold text-secondary"></label>
+                        <input asp-for="ActivityCode" class="form-control" placeholder="Ví dụ: ACT-2025-001" />
+                        <span asp-validation-for="ActivityCode" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Loại hoạt động -->
+                    <div class="col-md-6">
+                        <label asp-for="ActivityTypeId" class="form-label small fw-semibold text-secondary"></label>
+                        <select asp-for="ActivityTypeId" asp-items="ViewBag.ActivityTypes" class="form-select">
+                            <option value="">-- Chọn loại hoạt động --</option>
+                        </select>
+                        <span asp-validation-for="ActivityTypeId" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Học kỳ -->
+                    <div class="col-md-6">
+                        <label asp-for="SemesterId" class="form-label small fw-semibold text-secondary"></label>
+                        <select asp-for="SemesterId" asp-items="ViewBag.Semesters" class="form-select">
+                            <option value="">-- Chọn học kỳ áp dụng --</option>
+                        </select>
+                        <span asp-validation-for="SemesterId" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Địa điểm -->
+                    <div class="col-12">
+                        <label asp-for="Location" class="form-label small fw-semibold text-secondary"></label>
+                        <input asp-for="Location" class="form-control" placeholder="Ví dụ: Hội trường A - Cơ sở 1" />
+                        <span asp-validation-for="Location" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Mô tả -->
+                    <div class="col-12">
+                        <label asp-for="Description" class="form-label small fw-semibold text-secondary"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nhập mục đích, nội dung chương trình, quyền lợi tham gia..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Thời gian bắt đầu và kết thúc hoạt động -->
+                    <div class="col-md-6">
+                        <label asp-for="StartAt" class="form-label small fw-semibold text-secondary"></label>
+                        <input asp-for="StartAt" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="StartAt" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="EndAt" class="form-label small fw-semibold text-secondary"></label>
+                        <input asp-for="EndAt" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="EndAt" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Khung thời gian mở nhận đăng ký -->
+                    <div class="col-md-6">
+                        <label asp-for="RegistrationStartAt" class="form-label small fw-semibold text-secondary"></label>
+                        <input asp-for="RegistrationStartAt" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="RegistrationStartAt" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="RegistrationEndAt" class="form-label small fw-semibold text-secondary"></label>
+                        <input asp-for="RegistrationEndAt" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="RegistrationEndAt" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Số lượng tối đa -->
+                    <div class="col-md-4">
+                        <label asp-for="MaxParticipants" class="form-label small fw-semibold text-secondary"></label>
+                        <input asp-for="MaxParticipants" type="number" class="form-control" placeholder="Để trống nếu không giới hạn" />
+                        <span asp-validation-for="MaxParticipants" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Điểm rèn luyện ghi đè -->
+                    <div class="col-md-4">
+                        <label asp-for="PointOverride" class="form-label small fw-semibold text-secondary"></label>
+                        <input asp-for="PointOverride" type="number" class="form-control" placeholder="Ví dụ: 10" />
+                        <span asp-validation-for="PointOverride" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Chế độ điểm danh -->
+                    <div class="col-md-4">
+                        <label asp-for="AttendanceMode" class="form-label small fw-semibold text-secondary"></label>
+                        <select asp-for="AttendanceMode" class="form-select">
+                            <option value="CHECKIN_ONLY">Chỉ Check-in</option>
+                            <option value="CHECKIN_CHECKOUT">Check-in và Check-out</option>
+                        </select>
+                        <span asp-validation-for="AttendanceMode" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-outline-secondary">Hủy bỏ</a>
+                    <button type="submit" class="btn btn-primary-custom">
+                        <span class="material-symbols-outlined">save</span>
+                        <span>Lưu bản nháp (DRAFT)</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

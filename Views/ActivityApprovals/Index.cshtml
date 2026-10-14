@@ -1,0 +1,141 @@
+@model EMS_MVC.ViewModels.Manager.ActivityApprovalQueueViewModel
+@{
+    ViewData["Title"] = "Hàng đợi phê duyệt hoạt động";
+    Layout = "_Layout";
+}
+
+<div class="space-y-6">
+    <div>
+        <h1 class="text-2xl font-extrabold text-on-surface tracking-tight">Hàng đợi phê duyệt hoạt động</h1>
+        <p class="text-xs text-status-neutral mt-1">Cán bộ Quản lý Đoàn - Hội thẩm định và phê duyệt các đề xuất tổ chức hoạt động</p>
+    </div>
+
+    <!-- Khối 1: Các hoạt động đang chờ duyệt -->
+    <div class="bg-surface rounded-2xl shadow-sm border border-border-subtle overflow-hidden">
+        <div class="p-4 bg-slate-50 border-b border-border-subtle flex items-center justify-between">
+            <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <span class="material-symbols-outlined text-amber-500 text-[20px]">pending</span>
+                <span>Hoạt động đang chờ phê duyệt (@Model.PendingActivities.Count)</span>
+            </h2>
+        </div>
+
+        @if (Model.PendingActivities.Any())
+        {
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 border-b border-border-subtle text-[11px] font-bold uppercase tracking-wider text-status-neutral">
+                        <tr>
+                            <th class="py-3.5 px-5">Tên hoạt động</th>
+                            <th class="py-3.5 px-4">Loại hoạt động</th>
+                            <th class="py-3.5 px-4">Đơn vị tổ chức</th>
+                            <th class="py-3.5 px-4">Thời gian</th>
+                            <th class="py-3.5 px-4">Địa điểm</th>
+                            <th class="py-3.5 px-4">Điểm ĐRL</th>
+                            <th class="py-3.5 px-5 text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border-subtle text-slate-700">
+                        @foreach (var act in Model.PendingActivities)
+                        {
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="py-4 px-5">
+                                    <span class="font-bold text-on-surface text-sm block">@act.Name</span>
+                                    <span class="text-[11px] text-slate-400">Gửi lúc: @act.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                                        @act.ActivityTypeName
+                                    </span>
+                                </td>
+                                <td class="py-4 px-4 font-semibold text-slate-700">@act.OrganizerName</td>
+                                <td class="py-4 px-4 whitespace-nowrap">
+                                    <div class="font-medium text-slate-800">@act.StartAt.ToString("dd/MM/yyyy")</div>
+                                    <div class="text-[11px] text-slate-400">@act.StartAt.ToString("HH:mm") - @act.EndAt.ToString("HH:mm")</div>
+                                </td>
+                                <td class="py-4 px-4 text-slate-600 max-w-xs truncate">@act.Location</td>
+                                <td class="py-4 px-4">
+                                    <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-primary">
+                                        +@act.Points ĐRL
+                                    </span>
+                                </td>
+                                <td class="py-4 px-5 text-right whitespace-nowrap">
+                                    <a asp-action="Review" asp-route-id="@act.ActivityId" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold transition-all shadow-sm">
+                                        <span class="material-symbols-outlined text-[16px]">rate_review</span>
+                                        <span>Thẩm định &amp; Duyệt</span>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-12 text-slate-500 text-xs">
+                Hiện không có hoạt động nào đang chờ phê duyệt.
+            </div>
+        }
+    </div>
+
+    <!-- Khối 2: Lịch sử phê duyệt gần đây -->
+    <div class="bg-surface rounded-2xl shadow-sm border border-border-subtle overflow-hidden">
+        <div class="p-4 bg-slate-50 border-b border-border-subtle">
+            <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <span class="material-symbols-outlined text-slate-500 text-[20px]">history</span>
+                <span>Lịch sử thẩm định gần đây (@Model.RecentReviewedActivities.Count)</span>
+            </h2>
+        </div>
+
+        @if (Model.RecentReviewedActivities.Any())
+        {
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 border-b border-border-subtle text-[11px] font-bold uppercase tracking-wider text-status-neutral">
+                        <tr>
+                            <th class="py-3.5 px-5">Tên hoạt động</th>
+                            <th class="py-3.5 px-4">Đơn vị tổ chức</th>
+                            <th class="py-3.5 px-4">Quyết định</th>
+                            <th class="py-3.5 px-4">Ghi chú thẩm định</th>
+                            <th class="py-3.5 px-5 text-right">Xem chi tiết</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border-subtle text-slate-700">
+                        @foreach (var act in Model.RecentReviewedActivities)
+                        {
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="py-4 px-5">
+                                    <span class="font-bold text-on-surface text-sm block">@act.Name</span>
+                                    <span class="text-[11px] text-slate-400">@act.ActivityTypeName</span>
+                                </td>
+                                <td class="py-4 px-4">@act.OrganizerName</td>
+                                <td class="py-4 px-4 whitespace-nowrap">
+                                    @if (act.Status == "APPROVED" || act.Status == "OPEN")
+                                    {
+                                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">ĐÃ DUYỆT</span>
+                                    }
+                                    else if (act.Status == "REJECTED")
+                                    {
+                                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800">TỪ CHỐI</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700">@act.Status</span>
+                                    }
+                                </td>
+                                <td class="py-4 px-4 text-slate-600 max-w-sm truncate">
+                                    @(string.IsNullOrEmpty(act.ReviewNote) ? "—" : act.ReviewNote)
+                                </td>
+                                <td class="py-4 px-5 text-right whitespace-nowrap">
+                                    <a asp-controller="Activities" asp-action="Details" asp-route-id="@act.ActivityId" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium transition-colors">
+                                        Chi tiết
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,118 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\ldat1\\OneDrive\\Documents\\HeThongQuanLyTichDiemSV\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{827A8EF4-A363-D182-8E9E-52EF4280542D}|EMS-MVC.csproj|c:\\users\\ldat1\\onedrive\\documents\\hethongquanlytichdiemsv\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{827A8EF4-A363-D182-8E9E-52EF4280542D}|EMS-MVC.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{827A8EF4-A363-D182-8E9E-52EF4280542D}|EMS-MVC.csproj|c:\\users\\ldat1\\onedrive\\documents\\hethongquanlytichdiemsv\\views\\activities\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{827A8EF4-A363-D182-8E9E-52EF4280542D}|EMS-MVC.csproj|solutionrelative:views\\activities\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{827A8EF4-A363-D182-8E9E-52EF4280542D}|EMS-MVC.csproj|c:\\users\\ldat1\\onedrive\\documents\\hethongquanlytichdiemsv\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{827A8EF4-A363-D182-8E9E-52EF4280542D}|EMS-MVC.csproj|solutionrelative:views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{827A8EF4-A363-D182-8E9E-52EF4280542D}|EMS-MVC.csproj|c:\\users\\ldat1\\onedrive\\documents\\hethongquanlytichdiemsv\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{827A8EF4-A363-D182-8E9E-52EF4280542D}|EMS-MVC.csproj|solutionrelative:views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{827A8EF4-A363-D182-8E9E-52EF4280542D}|EMS-MVC.csproj|c:\\users\\ldat1\\onedrive\\documents\\hethongquanlytichdiemsv\\views\\account\\changepassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{827A8EF4-A363-D182-8E9E-52EF4280542D}|EMS-MVC.csproj|solutionrelative:views\\account\\changepassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{827A8EF4-A363-D182-8E9E-52EF4280542D}|EMS-MVC.csproj|c:\\users\\ldat1\\onedrive\\documents\\hethongquanlytichdiemsv\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{827A8EF4-A363-D182-8E9E-52EF4280542D}|EMS-MVC.csproj|solutionrelative:readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\ldat1\\OneDrive\\Documents\\HeThongQuanLyTichDiemSV\\Views\\Activities\\Details.cshtml",
+              "RelativeDocumentMoniker": "Views\\Activities\\Details.cshtml",
+              "ToolTip": "C:\\Users\\ldat1\\OneDrive\\Documents\\HeThongQuanLyTichDiemSV\\Views\\Activities\\Details.cshtml",
+              "RelativeToolTip": "Views\\Activities\\Details.cshtml",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-10-13T19:53:52.952Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Register.cshtml",
+              "DocumentMoniker": "C:\\Users\\ldat1\\OneDrive\\Documents\\HeThongQuanLyTichDiemSV\\Views\\Account\\Register.cshtml",
+              "RelativeDocumentMoniker": "Views\\Account\\Register.cshtml",
+              "ToolTip": "C:\\Users\\ldat1\\OneDrive\\Documents\\HeThongQuanLyTichDiemSV\\Views\\Account\\Register.cshtml",
+              "RelativeToolTip": "Views\\Account\\Register.cshtml",
+              "ViewState": "AgIAAGkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-10-13T19:53:45.109Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "C:\\Users\\ldat1\\OneDrive\\Documents\\HeThongQuanLyTichDiemSV\\Views\\Account\\Login.cshtml",
+              "RelativeDocumentMoniker": "Views\\Account\\Login.cshtml",
+              "ToolTip": "C:\\Users\\ldat1\\OneDrive\\Documents\\HeThongQuanLyTichDiemSV\\Views\\Account\\Login.cshtml",
+              "RelativeToolTip": "Views\\Account\\Login.cshtml",
+              "ViewState": "AgIAAFoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-10-13T19:53:25.664Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ChangePassword.cshtml",
+              "DocumentMoniker": "C:\\Users\\ldat1\\OneDrive\\Documents\\HeThongQuanLyTichDiemSV\\Views\\Account\\ChangePassword.cshtml",
+              "RelativeDocumentMoniker": "Views\\Account\\ChangePassword.cshtml",
+              "ToolTip": "C:\\Users\\ldat1\\OneDrive\\Documents\\HeThongQuanLyTichDiemSV\\Views\\Account\\ChangePassword.cshtml",
+              "RelativeToolTip": "Views\\Account\\ChangePassword.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-10-13T19:53:21.455Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\ldat1\\OneDrive\\Documents\\HeThongQuanLyTichDiemSV\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\ldat1\\OneDrive\\Documents\\HeThongQuanLyTichDiemSV\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-10-13T18:36:27.279Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "README.md",
+              "DocumentMoniker": "C:\\Users\\ldat1\\OneDrive\\Documents\\HeThongQuanLyTichDiemSV\\README.md",
+              "RelativeDocumentMoniker": "README.md",
+              "ToolTip": "C:\\Users\\ldat1\\OneDrive\\Documents\\HeThongQuanLyTichDiemSV\\README.md",
+              "RelativeToolTip": "README.md",
+              "ViewState": "AgIAAJAAAAAAAAAAAAAAAGMAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-10-13T18:34:06.808Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
